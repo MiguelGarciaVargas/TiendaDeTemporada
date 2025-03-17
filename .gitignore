@@ -1,0 +1,21 @@
+﻿# 🔹 Archivos de configuración de Visual Studio
+.vs/
+.vscode/
+
+# 🔹 Archivos de compilación de C#
+bin/
+obj/
+
+# 🔹 Archivos de depuración
+*.pdb
+
+# 🔹 Configuración de usuario
+*.user
+*.suo
+
+# 🔹 Caché y logs
+*.log
+*.cache
+
+# 🔹 Configuración de paquetes y dependencias
+packages/
