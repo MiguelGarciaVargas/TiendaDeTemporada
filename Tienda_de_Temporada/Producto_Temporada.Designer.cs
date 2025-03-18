@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.comboBox_pantallas = new System.Windows.Forms.ComboBox();
             this.label_producto = new System.Windows.Forms.Label();
             this.label_precio = new System.Windows.Forms.Label();
@@ -57,12 +57,13 @@
             this.comboBox_pantallas.FormattingEnabled = true;
             this.comboBox_pantallas.Items.AddRange(new object[] {
             "Cliente",
-            "Producto"});
+            "Producto",
+            "Producto-Temporada"});
             this.comboBox_pantallas.Location = new System.Drawing.Point(19, 12);
             this.comboBox_pantallas.Name = "comboBox_pantallas";
             this.comboBox_pantallas.Size = new System.Drawing.Size(246, 30);
             this.comboBox_pantallas.TabIndex = 32;
-            this.comboBox_pantallas.Text = "Producto";
+            this.comboBox_pantallas.Text = "Producto-Temporada";
             // 
             // label_producto
             // 
@@ -150,6 +151,7 @@
             // 
             this.tabla_prodTemp.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.tabla_prodTemp.BackgroundColor = System.Drawing.Color.White;
+            this.tabla_prodTemp.CausesValidation = false;
             this.tabla_prodTemp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tabla_prodTemp.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.IdProdTemp,
@@ -157,24 +159,24 @@
             this.producto,
             this.IdTemporada,
             this.temporada});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tabla_prodTemp.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tabla_prodTemp.DefaultCellStyle = dataGridViewCellStyle1;
             this.tabla_prodTemp.Location = new System.Drawing.Point(12, 316);
             this.tabla_prodTemp.Name = "tabla_prodTemp";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tabla_prodTemp.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tabla_prodTemp.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.tabla_prodTemp.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.tabla_prodTemp.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tabla_prodTemp.Size = new System.Drawing.Size(836, 210);
@@ -208,31 +210,31 @@
             // 
             // IdProdTemp
             // 
-            this.IdProdTemp.FillWeight = 20F;
+            this.IdProdTemp.FillWeight = 0.2970192F;
             this.IdProdTemp.HeaderText = "Id";
             this.IdProdTemp.Name = "IdProdTemp";
             // 
             // IdProducto
             // 
-            this.IdProducto.FillWeight = 50F;
+            this.IdProducto.FillWeight = 0.7425479F;
             this.IdProducto.HeaderText = "IdProducto";
             this.IdProducto.Name = "IdProducto";
             // 
             // producto
             // 
-            this.producto.FillWeight = 75F;
+            this.producto.FillWeight = 25.62905F;
             this.producto.HeaderText = "Producto";
             this.producto.Name = "producto";
             // 
             // IdTemporada
             // 
-            this.IdTemporada.FillWeight = 50F;
+            this.IdTemporada.FillWeight = 0.7425479F;
             this.IdTemporada.HeaderText = "IdTemporada";
             this.IdTemporada.Name = "IdTemporada";
             // 
             // temporada
             // 
-            this.temporada.FillWeight = 75F;
+            this.temporada.FillWeight = 242.5888F;
             this.temporada.HeaderText = "Temporada";
             this.temporada.Name = "temporada";
             // 

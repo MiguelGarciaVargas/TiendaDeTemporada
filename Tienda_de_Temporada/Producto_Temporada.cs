@@ -129,6 +129,8 @@ namespace Tienda_de_Temporada
                 {
                     string sentencia = @" SET LANGUAGE Spanish; SELECT 
                         pt.id_producto_temporada AS Id, 
+                        p.id_producto as IdProducto,
+                        t.id_temporada AS IdTemporada,
                         CONCAT(p.id_producto, ' - ', p.nombre_producto) AS Producto, 
                         CONCAT(t.nombre, ' (', DATENAME(MONTH, t.fecha_inicio), ' - ', DATENAME(MONTH, t.fecha_fin), ')') AS Temporada
                         FROM ProductoInfo.Producto_Temporada pt 
@@ -147,9 +149,29 @@ namespace Tienda_de_Temporada
                     tabla_prodTemp.DataSource = tabla;
 
                     // Ajustar nombres de columnas visibles
-                    tabla_prodTemp.Columns[0].HeaderText = "ID";
+                    tabla_prodTemp.Columns[0].HeaderText = "ID Producto-Temporada";
                     tabla_prodTemp.Columns["Producto"].HeaderText = "Producto";
                     tabla_prodTemp.Columns["Temporada"].HeaderText = "Temporada";
+
+                    // IDS ocultas
+                    tabla_prodTemp.Columns["IdProducto"].Visible = false;
+                    tabla_prodTemp.Columns["IdTemporada"].Visible = false;
+
+                    if (tabla_prodTemp.Columns.Count > 0) // 🔹 Verifica si hay columnas
+                    {
+                        if (tabla_prodTemp.Columns.Contains("Id"))
+                            tabla_prodTemp.Columns["Id"].Width = 50;  // ID pequeño
+
+                        if (tabla_prodTemp.Columns.Contains("Producto"))
+                            tabla_prodTemp.Columns["Producto"].Width = 200;  // Ajuste personalizado
+
+                        if (tabla_prodTemp.Columns.Contains("Temporada"))
+                            tabla_prodTemp.Columns["Temporada"].Width = 250; // Más espacio
+
+
+                        // 🔹 Evitar ajuste automático si queremos un ancho fijo
+                        tabla_prodTemp.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                    }
 
                     combo_producto.SelectedIndex = -1;
                     combo_temporada.SelectedIndex = -1;
