@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apartado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Apartado.Designer.cs">
+      <DependentUpon>Apartado.cs</DependentUpon>
+    </Compile>
     <Compile Include="Cliente.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +70,12 @@
     </Compile>
     <Compile Include="Producto.Designer.cs">
       <DependentUpon>Producto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Producto_Apartado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Producto_Apartado.Designer.cs">
+      <DependentUpon>Producto_Apartado.cs</DependentUpon>
     </Compile>
     <Compile Include="Producto_Temporada.cs">
       <SubType>Form</SubType>
@@ -85,11 +97,17 @@
     <Compile Include="Temporada.Designer.cs">
       <DependentUpon>Temporada.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Apartado.resx">
+      <DependentUpon>Apartado.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Cliente.resx">
       <DependentUpon>Cliente.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Producto.resx">
       <DependentUpon>Producto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Producto_Apartado.resx">
+      <DependentUpon>Producto_Apartado.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Producto_Temporada.resx">
       <DependentUpon>Producto_Temporada.cs</DependentUpon>

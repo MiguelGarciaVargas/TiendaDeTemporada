@@ -211,6 +211,18 @@ namespace Tienda_de_Temporada
                     pantallaProductoTemporada.Show();
                     break;
 
+                case 5:
+                    Apartado pantallaApartado = new Apartado();
+
+                    pantallaApartado.Show();
+                    break;
+
+                case 6:
+                    Producto_Apartado pantallaProductoApartado = new Producto_Apartado();
+
+                    pantallaProductoApartado.Show();
+                    break;
+
                 default:
                     // code block
                     break;

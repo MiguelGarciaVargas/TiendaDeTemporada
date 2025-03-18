@@ -21,6 +21,7 @@ namespace Tienda_de_Temporada
             InitializeComponent();
             variable_Conexion = new ConexionClass();
             ConsultarDatos();
+            Load_ComboBox_Apartado();
         }
 
         private void Load_ComboBox_Apartado()
@@ -74,17 +75,17 @@ namespace Tienda_de_Temporada
             {
                 try
                 {
-                    string sentencia = @"
-                        SET LANGUAGE Spanish;
-                        SELECT 
-                        id_apartado AS 'ID Apartado',
-                        total_apartado AS 'Total Apartado',
-                        saldo_pendiente AS 'Saldo Pendiente',
-                        estado AS 'Estado',
-                        id_tarjeta_cliente AS 'Tarjeta Cliente',
-                        FORMAT(fecha_creacion, 'dd/MM/yyyy') AS 'Fecha de Inicio',
-                        FORMAT(fecha_vencimiento, 'dd/MM/yyyy') AS 'Fecha de Fin'
-                        FROM VentasInfo.Apartado;";
+                    string sentencia = @"SET LANGUAGE Spanish;
+SELECT 
+    id_apartado AS 'ID Apartado',
+    total_apartado AS 'Total Apartado',
+    saldo_pendiente AS 'Saldo Pendiente',
+    estado AS 'Estado',
+    id_tarjeta_cliente AS 'Tarjeta Cliente',
+    fecha_creacion AS 'Fecha de Inicio', 
+    fecha_vencimiento AS 'Fecha de Fin'  
+FROM VentasInfo.Apartado;
+;";
 
                     conexion.Open();
 
@@ -128,11 +129,17 @@ namespace Tienda_de_Temporada
             {
                 try
                 {
+                    if (combo_tarjetas.SelectedValue == null)
+                    {
+                        MessageBox.Show("Selecciona una tarjeta antes de continuar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Detiene la ejecución
+                    }
+
                     conexion.Open();
                     string sentencia = @"
                         INSERT INTO VentasInfo.Apartado 
                         (id_tarjeta_cliente, total_apartado, fecha_creacion, fecha_vencimiento, saldo_pendiente, estado) 
-                        VALUES (@id_tarjeta, 1, @fecha_inicio, @fecha_fin, 1, 'En proceso');";
+                        VALUES (@id_tarjeta, 0, @fecha_inicio, @fecha_fin, 0, 'En proceso');";
 
                     SqlCommand comando = new SqlCommand(sentencia, conexion);
                     comando.Parameters.AddWithValue("@id_tarjeta", (long)combo_tarjetas.SelectedValue);
@@ -275,38 +282,81 @@ namespace Tienda_de_Temporada
             }
         }
 
+
         private void tabla_apartado_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0) // Evita que el usuario haga clic en el encabezado
             {
                 DataGridViewRow filaSeleccionada = tabla_apartado.Rows[e.RowIndex];
+                datoSeleccionado = tabla_apartado.CurrentRow.Index;
 
                 try
                 {
-                    // Guardar índice de la fila seleccionada
-                    datoSeleccionado = e.RowIndex;
+                    long idApartado = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
+                    long idTarjeta = Convert.ToInt64(filaSeleccionada.Cells[4].Value);
 
-                    // Obtener valores de la fila seleccionada
-                    long idTarjetaCliente = Convert.ToInt64(filaSeleccionada.Cells["Tarjeta Cliente"].Value);
-                    DateTime fechaInicio = Convert.ToDateTime(filaSeleccionada.Cells["Fecha de Inicio"].Value);
-                    DateTime fechaFin = Convert.ToDateTime(filaSeleccionada.Cells["Fecha de Fin"].Value);
-                    string estado = filaSeleccionada.Cells["Estado"].Value.ToString();
+                    combo_tarjetas.SelectedValue = idTarjeta;
 
-                    // Asignar valores a los controles del formulario
-                    combo_tarjetas.SelectedValue = idTarjetaCliente;
-                    calendar_fecha_inicio.SelectionStart = fechaInicio;
-                    calendar_fecha_fin.SelectionStart = fechaFin;
-
-                    // Si tienes un ComboBox para el estado, lo puedes asignar así:
-                    // combo_estado.SelectedItem = estado;
+                    DateTime fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado].Cells[5].Value.ToString());
+                    calendar_fecha_inicio.SetDate(fecha);
+                    fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado ].Cells[6].Value.ToString());
+                    calendar_fecha_fin.SetDate(fecha);
 
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al cargar datos en los ComboBox: " + ex.Message);
+                    MessageBox.Show("Error al cargar datos al seleccionar: " + ex.Message);
                 }
+
             }
         }
 
+
+        private void calendar_fecha_inicio_DateChanged(object sender, DateRangeEventArgs e)
+        {
+            calendar_fecha_fin.MinDate = calendar_fecha_inicio.SelectionStart;
+        }
+
+        private void combo_tarjetas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (combo_tarjetas.SelectedValue == null)
+                return; // Evita errores si no hay selección
+
+            using (SqlConnection conexion = variable_Conexion.Conectar())
+            {
+                try
+                {
+                    conexion.Open();
+                    string sentencia = "SELECT fecha_vencimiento FROM ClientesInfo.Tarjeta_Cliente WHERE id_tarjeta_cliente = @id_tarjeta";
+                    SqlCommand comando = new SqlCommand(sentencia, conexion);
+                    comando.Parameters.AddWithValue("@id_tarjeta", (long)combo_tarjetas.SelectedValue);
+
+                    object resultado = comando.ExecuteScalar();
+
+                    if (resultado != null)
+                    {
+                        DateTime fechaVencimientoTarjeta = Convert.ToDateTime(resultado);
+
+                        // 🔹 Limita la selección en `calendar_fecha_fin`
+                        calendar_fecha_fin.MaxDate = fechaVencimientoTarjeta;
+                        calendar_fecha_inicio.MaxDate = fechaVencimientoTarjeta;
+
+                        // 🔹 Si la fecha de vencimiento seleccionada es mayor, corregirla
+                        if (calendar_fecha_fin.SelectionStart > fechaVencimientoTarjeta)
+                        {
+                            calendar_fecha_fin.SetDate(fechaVencimientoTarjeta);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //MessageBox.Show("Error al obtener la fecha de vencimiento de la tarjeta: " + ex.Message);
+                }
+                finally
+                {
+                    conexion.Close();
+                }
+            }
+        }
     }
 }

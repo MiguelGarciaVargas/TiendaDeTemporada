@@ -289,7 +289,9 @@
             "Producto",
             "Temporada",
             "Proveedor",
-            "Producto-Temporada"});
+            "Producto-Temporada",
+            "Apartado",
+            "Producto-Apartado"});
             this.comboBox_pantallas.Location = new System.Drawing.Point(28, 12);
             this.comboBox_pantallas.Name = "comboBox_pantallas";
             this.comboBox_pantallas.Size = new System.Drawing.Size(246, 30);

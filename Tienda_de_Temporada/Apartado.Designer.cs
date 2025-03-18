@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabla_apartado = new System.Windows.Forms.DataGridView();
             this.IdProdTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IdProducto = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -61,24 +61,24 @@
             this.producto,
             this.IdTemporada,
             this.temporada});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle11;
             this.tabla_apartado.Location = new System.Drawing.Point(17, 420);
             this.tabla_apartado.Name = "tabla_apartado";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.tabla_apartado.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.tabla_apartado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tabla_apartado.Size = new System.Drawing.Size(836, 210);
@@ -117,12 +117,14 @@
             // 
             // combo_tarjetas
             // 
+            this.combo_tarjetas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.combo_tarjetas.FormattingEnabled = true;
             this.combo_tarjetas.Location = new System.Drawing.Point(124, 115);
             this.combo_tarjetas.Name = "combo_tarjetas";
-            this.combo_tarjetas.Size = new System.Drawing.Size(192, 21);
+            this.combo_tarjetas.Size = new System.Drawing.Size(455, 28);
             this.combo_tarjetas.TabIndex = 52;
             this.combo_tarjetas.Text = "Selecciona una tarjeta";
+            this.combo_tarjetas.SelectedIndexChanged += new System.EventHandler(this.combo_tarjetas_SelectedIndexChanged);
             // 
             // label_producto
             // 
@@ -175,6 +177,7 @@
             this.calendar_fecha_inicio.MinDate = new System.DateTime(2025, 2, 25, 0, 0, 0, 0);
             this.calendar_fecha_inicio.Name = "calendar_fecha_inicio";
             this.calendar_fecha_inicio.TabIndex = 61;
+            this.calendar_fecha_inicio.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.calendar_fecha_inicio_DateChanged);
             // 
             // label_fecha_inicio
             // 
