@@ -12,9 +12,9 @@ namespace Tienda_de_Temporada
         //Montse
         //private string cadenaConexion = "Server=DESKTOP-DHHEAFL\\SQLEXPRESS; Database=TiendaDeTemporada; Integrated Security=yes;";
         //Mike Desktop
-        private string cadenaConexion = "Server=DESKTOP-S528AVG\\SQLEXPRESS; Database=TiendaDeTemporada; Integrated Security=yes;";
+        //private string cadenaConexion = "Server=DESKTOP-S528AVG\\SQLEXPRESS; Database=TiendaDeTemporada; Integrated Security=yes;";
         //Mike Laptop
-        //private string cadenaConexion = "Server=LAPTOP-T3MDEHIJ\\SQLEXPRESS; Database=TiendaDeTemporada; Integrated Security=yes;";
+        private string cadenaConexion = "Server=LAPTOP-T3MDEHIJ\\SQLEXPRESS; Database=TiendaDeTemporada; Integrated Security=yes;";
 
         public string Conexion => cadenaConexion;
 

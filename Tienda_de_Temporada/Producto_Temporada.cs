@@ -13,6 +13,7 @@ namespace Tienda_de_Temporada
     {
         public ConexionClass variable_Conexion;
         private int selectedID;
+
         public Producto_Temporada()
         {
             InitializeComponent();
@@ -54,7 +55,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al consultar productos" + ex);
+                    MessageBox.Show("Error al consultar productos");
                 }
                 finally
                 {
@@ -104,7 +105,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al consultar temporadas" + ex);
+                    MessageBox.Show("Error al consultar temporadas" );
                 }
                 finally
                 {
@@ -174,7 +175,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al consultar datos de la temporada" + ex);
+                    MessageBox.Show("Error al consultar datos de la temporada" );
                 }
                 finally
                 {
@@ -207,7 +208,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al guardar la vinculacion Producto-Temporada: " + ex.Message);
+                    MessageBox.Show("Error al guardar la vinculacion Producto-Temporada: ");
                 }
                 finally
                 {
@@ -262,7 +263,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al actualizar los datos de la temporada \n" + ex.Message);
+                    MessageBox.Show("Error al actualizar los datos de la temporada \n" );
                 }
                 finally
                 {
@@ -320,7 +321,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al cargar datos en los ComboBox: " + ex.Message);
+                    MessageBox.Show("Error al cargar datos en los ComboBox: ");
                 }
             }
         }

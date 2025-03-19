@@ -155,7 +155,10 @@ namespace Tienda_de_Temporada
                 try
                 {
 
-                    string sentencia = "SELECT id_producto, nombre_producto FROM ProductoInfo.Producto";
+                    string sentencia = "SELECT p.id_producto, p.nombre_producto, t.id_temporada, t.nombre " +
+                        "FROM ProductoInfo.Producto_Temporada pt" +
+                        "INNER JOIN ProductoInfo.Producto p ON pt.id_producto = p.id_producto" +
+                        "INNER JOIN ProductoInfo.Temporada t ON pt.id_temproada = t.id_temporada";
                     conexion.Open();
 
                     SqlCommand comando = new SqlCommand(sentencia, conexion);
