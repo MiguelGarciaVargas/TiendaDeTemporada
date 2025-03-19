@@ -28,14 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabla_apartado = new System.Windows.Forms.DataGridView();
-            this.IdProdTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdProducto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.producto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdTemporada = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.temporada = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.combo_tarjetas = new System.Windows.Forms.ComboBox();
             this.label_producto = new System.Windows.Forms.Label();
             this.label_nombre = new System.Windows.Forms.Label();
@@ -47,6 +42,14 @@
             this.button_actualizar = new System.Windows.Forms.Button();
             this.button_eliminar = new System.Windows.Forms.Button();
             this.button_agregar = new System.Windows.Forms.Button();
+            this.IdApartado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SaldoPendiente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdTarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FechaInicio = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FechaVencimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_apartado)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,64 +59,37 @@
             this.tabla_apartado.BackgroundColor = System.Drawing.Color.White;
             this.tabla_apartado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tabla_apartado.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.IdProdTemp,
-            this.IdProducto,
-            this.producto,
-            this.IdTemporada,
-            this.temporada});
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle11;
+            this.IdApartado,
+            this.Total,
+            this.SaldoPendiente,
+            this.Estado,
+            this.IdTarjeta,
+            this.Tarjeta,
+            this.FechaInicio,
+            this.FechaVencimiento});
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle1;
             this.tabla_apartado.Location = new System.Drawing.Point(17, 420);
             this.tabla_apartado.Name = "tabla_apartado";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.tabla_apartado.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.tabla_apartado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.tabla_apartado.Size = new System.Drawing.Size(836, 210);
+            this.tabla_apartado.Size = new System.Drawing.Size(1048, 210);
             this.tabla_apartado.TabIndex = 55;
             this.tabla_apartado.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tabla_apartado_CellClick);
-            // 
-            // IdProdTemp
-            // 
-            this.IdProdTemp.FillWeight = 20F;
-            this.IdProdTemp.HeaderText = "Id";
-            this.IdProdTemp.Name = "IdProdTemp";
-            // 
-            // IdProducto
-            // 
-            this.IdProducto.FillWeight = 50F;
-            this.IdProducto.HeaderText = "IdProducto";
-            this.IdProducto.Name = "IdProducto";
-            // 
-            // producto
-            // 
-            this.producto.FillWeight = 75F;
-            this.producto.HeaderText = "Producto";
-            this.producto.Name = "producto";
-            // 
-            // IdTemporada
-            // 
-            this.IdTemporada.FillWeight = 50F;
-            this.IdTemporada.HeaderText = "IdTemporada";
-            this.IdTemporada.Name = "IdTemporada";
-            // 
-            // temporada
-            // 
-            this.temporada.FillWeight = 75F;
-            this.temporada.HeaderText = "Temporada";
-            this.temporada.Name = "temporada";
             // 
             // combo_tarjetas
             // 
@@ -245,6 +221,47 @@
             this.button_agregar.UseVisualStyleBackColor = false;
             this.button_agregar.Click += new System.EventHandler(this.button_agregar_Click);
             // 
+            // IdApartado
+            // 
+            this.IdApartado.HeaderText = "ID-Apartado";
+            this.IdApartado.MinimumWidth = 50;
+            this.IdApartado.Name = "IdApartado";
+            // 
+            // Total
+            // 
+            this.Total.HeaderText = "Total";
+            this.Total.Name = "Total";
+            // 
+            // SaldoPendiente
+            // 
+            this.SaldoPendiente.HeaderText = "Saldo Pendiente";
+            this.SaldoPendiente.Name = "SaldoPendiente";
+            // 
+            // Estado
+            // 
+            this.Estado.HeaderText = "Estado";
+            this.Estado.Name = "Estado";
+            // 
+            // IdTarjeta
+            // 
+            this.IdTarjeta.HeaderText = "IdTarjeta";
+            this.IdTarjeta.Name = "IdTarjeta";
+            // 
+            // Tarjeta
+            // 
+            this.Tarjeta.HeaderText = "Tarjeta";
+            this.Tarjeta.Name = "Tarjeta";
+            // 
+            // FechaInicio
+            // 
+            this.FechaInicio.HeaderText = "Fecha de inicio";
+            this.FechaInicio.Name = "FechaInicio";
+            // 
+            // FechaVencimiento
+            // 
+            this.FechaVencimiento.HeaderText = "Fecha de vencimiento";
+            this.FechaVencimiento.Name = "FechaVencimiento";
+            // 
             // Apartado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,11 +289,6 @@
 
         #endregion
         private System.Windows.Forms.DataGridView tabla_apartado;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IdProdTemp;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IdProducto;
-        private System.Windows.Forms.DataGridViewTextBoxColumn producto;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IdTemporada;
-        private System.Windows.Forms.DataGridViewTextBoxColumn temporada;
         private System.Windows.Forms.ComboBox combo_tarjetas;
         private System.Windows.Forms.Label label_producto;
         private System.Windows.Forms.Label label_nombre;
@@ -288,5 +300,13 @@
         private System.Windows.Forms.Button button_actualizar;
         private System.Windows.Forms.Button button_eliminar;
         private System.Windows.Forms.Button button_agregar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IdApartado;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Total;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SaldoPendiente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Estado;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IdTarjeta;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tarjeta;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FechaInicio;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FechaVencimiento;
     }
 }

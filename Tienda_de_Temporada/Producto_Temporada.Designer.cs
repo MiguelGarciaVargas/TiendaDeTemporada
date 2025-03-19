@@ -210,32 +210,35 @@
             // 
             // IdProdTemp
             // 
-            this.IdProdTemp.FillWeight = 0.2970192F;
+            this.IdProdTemp.FillWeight = 27.41117F;
             this.IdProdTemp.HeaderText = "Id";
+            this.IdProdTemp.MinimumWidth = 100;
             this.IdProdTemp.Name = "IdProdTemp";
             // 
             // IdProducto
             // 
-            this.IdProducto.FillWeight = 0.7425479F;
+            this.IdProducto.FillWeight = 0.6678971F;
             this.IdProducto.HeaderText = "IdProducto";
             this.IdProducto.Name = "IdProducto";
             // 
             // producto
             // 
-            this.producto.FillWeight = 25.62905F;
+            this.producto.FillWeight = 23.05247F;
             this.producto.HeaderText = "Producto";
+            this.producto.MinimumWidth = 300;
             this.producto.Name = "producto";
             // 
             // IdTemporada
             // 
-            this.IdTemporada.FillWeight = 0.7425479F;
+            this.IdTemporada.FillWeight = 0.6678971F;
             this.IdTemporada.HeaderText = "IdTemporada";
             this.IdTemporada.Name = "IdTemporada";
             // 
             // temporada
             // 
-            this.temporada.FillWeight = 242.5888F;
+            this.temporada.FillWeight = 218.2005F;
             this.temporada.HeaderText = "Temporada";
+            this.temporada.MinimumWidth = 350;
             this.temporada.Name = "temporada";
             // 
             // Producto_Temporada

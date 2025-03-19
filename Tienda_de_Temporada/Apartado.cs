@@ -31,12 +31,22 @@ namespace Tienda_de_Temporada
                 try
                 {
 
+                    //string sentencia = @"
+                    //    SELECT 
+                    //    id_tarjeta_cliente AS ID,
+                    //    CONCAT(banco, ' - ', tipo, ' (****-****-****-', RIGHT(numero_tarjeta, 4), ') Exp: ', 
+                    //    FORMAT(fecha_vencimiento, 'MM/yyyy')) AS Tarjeta 
+                    //    FROM ClientesInfo.Tarjeta_Cliente;";
+
                     string sentencia = @"
                         SELECT 
                         id_tarjeta_cliente AS ID,
-                        CONCAT(banco, ' - ', tipo, ' (****-****-****-', RIGHT(numero_tarjeta, 4), ') Exp: ', 
-                        FORMAT(fecha_vencimiento, 'MM/yyyy')) AS Tarjeta 
-                        FROM ClientesInfo.Tarjeta_Cliente;";
+                        CONCAT('*',RIGHT(numero_tarjeta, 3)) AS Numero,
+                        banco AS Banco,
+                        c.nombre_cliente AS Nombre
+                        FROM ClientesInfo.Tarjeta_Cliente tc
+                        INNER JOIN ClientesInfo.Cliente c ON tc.id_cliente = c.id_cliente;";
+
                     conexion.Open();
 
                     SqlCommand comando = new SqlCommand(sentencia, conexion);
@@ -46,7 +56,11 @@ namespace Tienda_de_Temporada
                         while (lector.Read())
                         {
                             long idTarjeta = lector.GetInt64(0);
-                            string textoTarjeta = lector.GetString(1);
+                            string numero = lector.GetString(1);
+                            string banco = lector.GetString(2);
+                            string nombre = lector.GetString(3);
+
+                            string textoTarjeta = $"{numero} ({banco}) - {nombre}";
 
                             tarjetas.Add(new KeyValuePair<long, string>(idTarjeta, textoTarjeta));
                         }
@@ -76,16 +90,19 @@ namespace Tienda_de_Temporada
                 try
                 {
                     string sentencia = @"SET LANGUAGE Spanish;
-SELECT 
-    id_apartado AS 'ID Apartado',
-    total_apartado AS 'Total Apartado',
-    saldo_pendiente AS 'Saldo Pendiente',
-    estado AS 'Estado',
-    id_tarjeta_cliente AS 'Tarjeta Cliente',
-    fecha_creacion AS 'Fecha de Inicio', 
-    fecha_vencimiento AS 'Fecha de Fin'  
-FROM VentasInfo.Apartado;
-;";
+                                            SELECT 
+                                                id_apartado AS 'IdApartado',
+                                                total_apartado AS 'Total',
+                                                saldo_pendiente AS 'Saldo Pendiente',
+                                                estado AS 'Estado',
+                                                a.id_tarjeta_cliente AS 'IdTarjeta',
+                                                CONCAT('*', RIGHT(tc.numero_tarjeta, 3), ' (', tc.banco, ') - ', c.nombre_cliente) AS 'Tarjeta',
+                                                fecha_creacion AS 'Fecha de Inicio', 
+                                                a.fecha_vencimiento AS 'Fecha de Vencimiento'
+                                                    FROM VentasInfo.Apartado a
+                                                    INNER JOIN ClientesInfo.Tarjeta_Cliente tc ON a.id_tarjeta_cliente = tc.id_tarjeta_cliente
+                                                    INNER JOIN ClientesInfo.Cliente c ON tc.id_cliente = c.id_cliente;
+                                            ";
 
                     conexion.Open();
 
@@ -97,15 +114,39 @@ FROM VentasInfo.Apartado;
                     tabla_apartado.DataSource = null;
                     tabla_apartado.Columns.Clear();
                     tabla_apartado.DataSource = tabla;
+                    tabla_apartado.Refresh();
 
-                    tabla_apartado.Columns[0].HeaderText = "ID Apartado";
-                    tabla_apartado.Columns[1].HeaderText = "Total";
-                    tabla_apartado.Columns[2].HeaderText = "Saldo Pendiente";
-                    tabla_apartado.Columns[3].HeaderText = "Estado";
-                    tabla_apartado.Columns[4].HeaderText = "Tarjeta";
-                    tabla_apartado.Columns[5].HeaderText = "Fecha de inicio";
-                    tabla_apartado.Columns[6].HeaderText = "Fecha de fin";
+                    // Asegurar que hay columnas antes de intentar modificarlas
+                    if (tabla_apartado.Columns.Count > 0)
+                    {
+                        tabla_apartado.Columns["IdApartado"].HeaderText = "IdApartado";
+                        tabla_apartado.Columns["Total"].HeaderText = "Total";
+                        tabla_apartado.Columns["Saldo Pendiente"].HeaderText = "Saldo Pendiente";
+                        tabla_apartado.Columns["Estado"].HeaderText = "Estado";
+                        tabla_apartado.Columns["IdTarjeta"].HeaderText = "IdTarjeta";
+                        tabla_apartado.Columns["Tarjeta"].HeaderText = "Tarjeta";
+                        tabla_apartado.Columns["Fecha de Inicio"].HeaderText = "Fecha de inicio";
+                        tabla_apartado.Columns["Fecha de Vencimiento"].HeaderText = "Fecha de Vencimiento";
 
+                        // Ocultar la columna de ID de la tarjeta
+                        tabla_apartado.Columns["IdTarjeta"].Visible = false;
+
+                        tabla_apartado.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+                        // Ajustar anchos de columnas manualmente
+                        tabla_apartado.Columns["IdApartado"].Width = 70;
+                        tabla_apartado.Columns["Total"].Width = 120;
+                        tabla_apartado.Columns["Saldo Pendiente"].Width = 130;
+                        tabla_apartado.Columns["Estado"].Width = 120;
+                        tabla_apartado.Columns["Tarjeta"].Width = 300;
+                        tabla_apartado.Columns["Fecha de Inicio"].Width = 120;
+                        tabla_apartado.Columns["Fecha de Vencimiento"].Width = 120;
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Las columnas no se han generado correctamente.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
 
                 }
