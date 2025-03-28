@@ -28,9 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabla_apartado = new System.Windows.Forms.DataGridView();
+            this.IdApartado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SaldoPendiente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdTarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FechaInicio = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FechaVencimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.combo_tarjetas = new System.Windows.Forms.ComboBox();
             this.label_producto = new System.Windows.Forms.Label();
             this.label_nombre = new System.Windows.Forms.Label();
@@ -42,14 +50,7 @@
             this.button_actualizar = new System.Windows.Forms.Button();
             this.button_eliminar = new System.Windows.Forms.Button();
             this.button_agregar = new System.Windows.Forms.Button();
-            this.IdApartado = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SaldoPendiente = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Estado = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdTarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tarjeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FechaInicio = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FechaVencimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btn_producto_apartado = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_apartado)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,29 +68,70 @@
             this.Tarjeta,
             this.FechaInicio,
             this.FechaVencimiento});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tabla_apartado.DefaultCellStyle = dataGridViewCellStyle5;
             this.tabla_apartado.Location = new System.Drawing.Point(17, 420);
             this.tabla_apartado.Name = "tabla_apartado";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Century Gothic", 14.25F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Century Gothic", 14.25F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tabla_apartado.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.tabla_apartado.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.tabla_apartado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tabla_apartado.Size = new System.Drawing.Size(1048, 210);
             this.tabla_apartado.TabIndex = 55;
             this.tabla_apartado.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tabla_apartado_CellClick);
+            // 
+            // IdApartado
+            // 
+            this.IdApartado.HeaderText = "ID-Apartado";
+            this.IdApartado.MinimumWidth = 50;
+            this.IdApartado.Name = "IdApartado";
+            // 
+            // Total
+            // 
+            this.Total.HeaderText = "Total";
+            this.Total.Name = "Total";
+            // 
+            // SaldoPendiente
+            // 
+            this.SaldoPendiente.HeaderText = "Saldo Pendiente";
+            this.SaldoPendiente.Name = "SaldoPendiente";
+            // 
+            // Estado
+            // 
+            this.Estado.HeaderText = "Estado";
+            this.Estado.Name = "Estado";
+            // 
+            // IdTarjeta
+            // 
+            this.IdTarjeta.HeaderText = "IdTarjeta";
+            this.IdTarjeta.Name = "IdTarjeta";
+            // 
+            // Tarjeta
+            // 
+            this.Tarjeta.HeaderText = "Tarjeta";
+            this.Tarjeta.Name = "Tarjeta";
+            // 
+            // FechaInicio
+            // 
+            this.FechaInicio.HeaderText = "Fecha de inicio";
+            this.FechaInicio.Name = "FechaInicio";
+            // 
+            // FechaVencimiento
+            // 
+            this.FechaVencimiento.HeaderText = "Fecha de vencimiento";
+            this.FechaVencimiento.Name = "FechaVencimiento";
             // 
             // combo_tarjetas
             // 
@@ -221,52 +263,26 @@
             this.button_agregar.UseVisualStyleBackColor = false;
             this.button_agregar.Click += new System.EventHandler(this.button_agregar_Click);
             // 
-            // IdApartado
+            // btn_producto_apartado
             // 
-            this.IdApartado.HeaderText = "ID-Apartado";
-            this.IdApartado.MinimumWidth = 50;
-            this.IdApartado.Name = "IdApartado";
-            // 
-            // Total
-            // 
-            this.Total.HeaderText = "Total";
-            this.Total.Name = "Total";
-            // 
-            // SaldoPendiente
-            // 
-            this.SaldoPendiente.HeaderText = "Saldo Pendiente";
-            this.SaldoPendiente.Name = "SaldoPendiente";
-            // 
-            // Estado
-            // 
-            this.Estado.HeaderText = "Estado";
-            this.Estado.Name = "Estado";
-            // 
-            // IdTarjeta
-            // 
-            this.IdTarjeta.HeaderText = "IdTarjeta";
-            this.IdTarjeta.Name = "IdTarjeta";
-            // 
-            // Tarjeta
-            // 
-            this.Tarjeta.HeaderText = "Tarjeta";
-            this.Tarjeta.Name = "Tarjeta";
-            // 
-            // FechaInicio
-            // 
-            this.FechaInicio.HeaderText = "Fecha de inicio";
-            this.FechaInicio.Name = "FechaInicio";
-            // 
-            // FechaVencimiento
-            // 
-            this.FechaVencimiento.HeaderText = "Fecha de vencimiento";
-            this.FechaVencimiento.Name = "FechaVencimiento";
+            this.btn_producto_apartado.BackColor = System.Drawing.Color.SteelBlue;
+            this.btn_producto_apartado.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_producto_apartado.ForeColor = System.Drawing.Color.White;
+            this.btn_producto_apartado.Location = new System.Drawing.Point(707, 348);
+            this.btn_producto_apartado.Margin = new System.Windows.Forms.Padding(2);
+            this.btn_producto_apartado.Name = "btn_producto_apartado";
+            this.btn_producto_apartado.Size = new System.Drawing.Size(181, 62);
+            this.btn_producto_apartado.TabIndex = 63;
+            this.btn_producto_apartado.Text = "Productos de apartado";
+            this.btn_producto_apartado.UseVisualStyleBackColor = false;
+            this.btn_producto_apartado.Click += new System.EventHandler(this.btn_producto_apartado_Click);
             // 
             // Apartado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1077, 642);
+            this.Controls.Add(this.btn_producto_apartado);
             this.Controls.Add(this.calendar_fecha_fin);
             this.Controls.Add(this.calendar_fecha_inicio);
             this.Controls.Add(this.label_fecha_inicio);
@@ -281,6 +297,7 @@
             this.Controls.Add(this.comboBox_pantallas);
             this.Name = "Apartado";
             this.Text = "Apartado";
+            this.Load += new System.EventHandler(this.Apartado_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tabla_apartado)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -308,5 +325,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tarjeta;
         private System.Windows.Forms.DataGridViewTextBoxColumn FechaInicio;
         private System.Windows.Forms.DataGridViewTextBoxColumn FechaVencimiento;
+        private System.Windows.Forms.Button btn_producto_apartado;
     }
 }

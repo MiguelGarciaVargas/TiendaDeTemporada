@@ -32,11 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.comboBox_pantallas = new System.Windows.Forms.ComboBox();
             this.label_nombre = new System.Windows.Forms.Label();
-            this.label_precio = new System.Windows.Forms.Label();
             this.button_actualizar = new System.Windows.Forms.Button();
             this.label_producto = new System.Windows.Forms.Label();
             this.combo_producto = new System.Windows.Forms.ComboBox();
-            this.combo_apartado = new System.Windows.Forms.ComboBox();
             this.button_agregar = new System.Windows.Forms.Button();
             this.temporada = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IdTemporada = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,6 +45,8 @@
             this.button_eliminar = new System.Windows.Forms.Button();
             this.textBox_cantidad = new System.Windows.Forms.TextBox();
             this.label_existencias = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblIdApartado = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_prodApart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -69,31 +69,19 @@
             this.label_nombre.AutoSize = true;
             this.label_nombre.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_nombre.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label_nombre.Location = new System.Drawing.Point(22, 171);
+            this.label_nombre.Location = new System.Drawing.Point(29, 172);
             this.label_nombre.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label_nombre.Name = "label_nombre";
             this.label_nombre.Size = new System.Drawing.Size(98, 23);
             this.label_nombre.TabIndex = 48;
             this.label_nombre.Text = "Producto:";
             // 
-            // label_precio
-            // 
-            this.label_precio.AutoSize = true;
-            this.label_precio.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_precio.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label_precio.Location = new System.Drawing.Point(22, 132);
-            this.label_precio.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label_precio.Name = "label_precio";
-            this.label_precio.Size = new System.Drawing.Size(105, 23);
-            this.label_precio.TabIndex = 49;
-            this.label_precio.Text = "Apartado:";
-            // 
             // button_actualizar
             // 
             this.button_actualizar.BackColor = System.Drawing.Color.SteelBlue;
             this.button_actualizar.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_actualizar.ForeColor = System.Drawing.Color.White;
-            this.button_actualizar.Location = new System.Drawing.Point(249, 265);
+            this.button_actualizar.Location = new System.Drawing.Point(256, 266);
             this.button_actualizar.Margin = new System.Windows.Forms.Padding(2);
             this.button_actualizar.Name = "button_actualizar";
             this.button_actualizar.Size = new System.Drawing.Size(181, 47);
@@ -116,27 +104,18 @@
             // combo_producto
             // 
             this.combo_producto.FormattingEnabled = true;
-            this.combo_producto.Location = new System.Drawing.Point(188, 171);
+            this.combo_producto.Location = new System.Drawing.Point(195, 172);
             this.combo_producto.Name = "combo_producto";
             this.combo_producto.Size = new System.Drawing.Size(192, 21);
             this.combo_producto.TabIndex = 52;
             this.combo_producto.Text = "Selecciona un producto";
-            // 
-            // combo_apartado
-            // 
-            this.combo_apartado.FormattingEnabled = true;
-            this.combo_apartado.Location = new System.Drawing.Point(188, 134);
-            this.combo_apartado.Name = "combo_apartado";
-            this.combo_apartado.Size = new System.Drawing.Size(192, 21);
-            this.combo_apartado.TabIndex = 53;
-            this.combo_apartado.Text = "Selecciona un apartado";
             // 
             // button_agregar
             // 
             this.button_agregar.BackColor = System.Drawing.Color.SteelBlue;
             this.button_agregar.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_agregar.ForeColor = System.Drawing.Color.White;
-            this.button_agregar.Location = new System.Drawing.Point(26, 265);
+            this.button_agregar.Location = new System.Drawing.Point(33, 266);
             this.button_agregar.Margin = new System.Windows.Forms.Padding(2);
             this.button_agregar.Name = "button_agregar";
             this.button_agregar.Size = new System.Drawing.Size(181, 47);
@@ -194,7 +173,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.tabla_prodApart.DefaultCellStyle = dataGridViewCellStyle1;
-            this.tabla_prodApart.Location = new System.Drawing.Point(26, 326);
+            this.tabla_prodApart.Location = new System.Drawing.Point(33, 327);
             this.tabla_prodApart.Name = "tabla_prodApart";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
@@ -208,25 +187,27 @@
             this.tabla_prodApart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tabla_prodApart.Size = new System.Drawing.Size(836, 210);
             this.tabla_prodApart.TabIndex = 55;
+            this.tabla_prodApart.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tabla_apartado_CellClick);
             // 
             // button_eliminar
             // 
             this.button_eliminar.BackColor = System.Drawing.Color.SteelBlue;
             this.button_eliminar.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_eliminar.ForeColor = System.Drawing.Color.White;
-            this.button_eliminar.Location = new System.Drawing.Point(475, 265);
+            this.button_eliminar.Location = new System.Drawing.Point(482, 266);
             this.button_eliminar.Margin = new System.Windows.Forms.Padding(2);
             this.button_eliminar.Name = "button_eliminar";
             this.button_eliminar.Size = new System.Drawing.Size(181, 47);
             this.button_eliminar.TabIndex = 56;
             this.button_eliminar.Text = "Eliminar";
             this.button_eliminar.UseVisualStyleBackColor = false;
+            this.button_eliminar.Click += new System.EventHandler(this.button_eliminar_Click);
             // 
             // textBox_cantidad
             // 
             this.textBox_cantidad.BackColor = System.Drawing.Color.Lavender;
             this.textBox_cantidad.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_cantidad.Location = new System.Drawing.Point(188, 211);
+            this.textBox_cantidad.Location = new System.Drawing.Point(195, 212);
             this.textBox_cantidad.Margin = new System.Windows.Forms.Padding(2);
             this.textBox_cantidad.Name = "textBox_cantidad";
             this.textBox_cantidad.Size = new System.Drawing.Size(292, 33);
@@ -238,33 +219,55 @@
             this.label_existencias.AutoSize = true;
             this.label_existencias.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_existencias.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label_existencias.Location = new System.Drawing.Point(22, 215);
+            this.label_existencias.Location = new System.Drawing.Point(29, 216);
             this.label_existencias.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label_existencias.Name = "label_existencias";
             this.label_existencias.Size = new System.Drawing.Size(104, 23);
             this.label_existencias.TabIndex = 58;
             this.label_existencias.Text = "Cantidad:";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.SteelBlue;
+            this.label1.Location = new System.Drawing.Point(29, 122);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 23);
+            this.label1.TabIndex = 60;
+            this.label1.Text = "Apartado:";
+            // 
+            // lblIdApartado
+            // 
+            this.lblIdApartado.AutoSize = true;
+            this.lblIdApartado.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIdApartado.ForeColor = System.Drawing.Color.SteelBlue;
+            this.lblIdApartado.Location = new System.Drawing.Point(191, 122);
+            this.lblIdApartado.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblIdApartado.Name = "lblIdApartado";
+            this.lblIdApartado.Size = new System.Drawing.Size(0, 23);
+            this.lblIdApartado.TabIndex = 61;
+            // 
             // Producto_Apartado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1078, 669);
+            this.ClientSize = new System.Drawing.Size(1078, 563);
+            this.Controls.Add(this.lblIdApartado);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_cantidad);
             this.Controls.Add(this.label_existencias);
             this.Controls.Add(this.button_actualizar);
             this.Controls.Add(this.button_eliminar);
             this.Controls.Add(this.tabla_prodApart);
             this.Controls.Add(this.button_agregar);
-            this.Controls.Add(this.combo_apartado);
             this.Controls.Add(this.combo_producto);
             this.Controls.Add(this.label_producto);
-            this.Controls.Add(this.label_precio);
             this.Controls.Add(this.label_nombre);
             this.Controls.Add(this.comboBox_pantallas);
             this.Name = "Producto_Apartado";
             this.Text = "Producto_Apartado";
-            this.Load += new System.EventHandler(this.Producto_Apartado_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tabla_prodApart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -275,11 +278,9 @@
 
         private System.Windows.Forms.ComboBox comboBox_pantallas;
         private System.Windows.Forms.Label label_nombre;
-        private System.Windows.Forms.Label label_precio;
         private System.Windows.Forms.Button button_actualizar;
         private System.Windows.Forms.Label label_producto;
         private System.Windows.Forms.ComboBox combo_producto;
-        private System.Windows.Forms.ComboBox combo_apartado;
         private System.Windows.Forms.Button button_agregar;
         private System.Windows.Forms.DataGridViewTextBoxColumn temporada;
         private System.Windows.Forms.DataGridViewTextBoxColumn IdTemporada;
@@ -290,5 +291,7 @@
         private System.Windows.Forms.Button button_eliminar;
         private System.Windows.Forms.TextBox textBox_cantidad;
         private System.Windows.Forms.Label label_existencias;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblIdApartado;
     }
 }

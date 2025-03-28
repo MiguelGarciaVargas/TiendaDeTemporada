@@ -275,11 +275,17 @@ namespace Tienda_de_Temporada
                     comando.Parameters.AddWithValue("@id_apartado", idApartado);
 
                     int filasEliminadas = comando.ExecuteNonQuery();
-
                     if (filasEliminadas > 0)
                         MessageBox.Show("Registro de apartado eliminado correctamente.");
                     else
                         MessageBox.Show("No se encontró el registro a eliminar.");
+
+                    sentencia = "DELETE FROM VentasInfo.Producto_Apartado WHERE id_apartado = @id_apartado";
+                    comando = new SqlCommand(sentencia, conexion);
+                    comando.Parameters.AddWithValue("@id_apartado", idApartado);
+
+                    filasEliminadas = comando.ExecuteNonQuery();
+
                 }
                 catch (Exception ex)
                 {
@@ -304,6 +310,7 @@ namespace Tienda_de_Temporada
                 ActualizarDato();
                 ConsultarDatos();
                 datoSeleccionado = -1;
+                btn_producto_apartado.Enabled = false;
             }
         }
 
@@ -311,6 +318,7 @@ namespace Tienda_de_Temporada
         {
             InsertaDato();
             ConsultarDatos();
+            btn_producto_apartado.Enabled = false;
         }
 
         private void button_eliminar_Click(object sender, EventArgs e)
@@ -320,6 +328,7 @@ namespace Tienda_de_Temporada
                 EliminarDato();
                 ConsultarDatos();
                 datoSeleccionado = -1;
+                btn_producto_apartado.Enabled = false;
             }
         }
 
@@ -333,15 +342,22 @@ namespace Tienda_de_Temporada
 
                 try
                 {
+                    //var rawFechaInicio = tabla_apartado.Rows[datoSeleccionado].Cells[5].Value;
+                    //var rawFechaFin = tabla_apartado.Rows[datoSeleccionado].Cells[6].Value;
+
+                    //MessageBox.Show($"Fecha Inicio: {rawFechaInicio} ({rawFechaInicio.GetType()}) \nFecha Fin: {rawFechaFin} ({rawFechaFin.GetType()})");
+
                     long idApartado = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
                     long idTarjeta = Convert.ToInt64(filaSeleccionada.Cells[4].Value);
 
                     combo_tarjetas.SelectedValue = idTarjeta;
 
-                    DateTime fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado].Cells[5].Value.ToString());
+                    DateTime fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado].Cells[6].Value.ToString());
                     calendar_fecha_inicio.SetDate(fecha);
-                    fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado ].Cells[6].Value.ToString());
+                    fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado ].Cells[7].Value.ToString());
                     calendar_fecha_fin.SetDate(fecha);
+
+                    btn_producto_apartado.Enabled = true;
 
                 }
                 catch (Exception ex)
@@ -398,6 +414,17 @@ namespace Tienda_de_Temporada
                     conexion.Close();
                 }
             }
+        }
+
+        private void Apartado_Load(object sender, EventArgs e)
+        {
+            btn_producto_apartado.Enabled = false;
+        }
+
+        private void btn_producto_apartado_Click(object sender, EventArgs e)
+        {
+            Producto_Apartado pantallaProductoApartado = new Producto_Apartado(datoSeleccionado);
+            pantallaProductoApartado.Show();
         }
     }
 }

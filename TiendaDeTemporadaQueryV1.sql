@@ -69,6 +69,12 @@ CREATE TABLE ProductoInfo.Producto_Temporada (
     CONSTRAINT FKProductoTemporada_Temporada FOREIGN KEY (id_temporada) REFERENCES ProductoInfo.Temporada(id_temporada)
 );
 
+TRUNCATE TABLE ProductoInfo.Producto_Temporada;
+
+ALTER TABLE ProductoInfo.Producto_Temporada
+ADD CONSTRAINT UQ_ProductoTemporada UNIQUE (id_producto, id_temporada);
+
+
 
 CREATE TABLE ComprasInfo.Compra (
     id_compra BIGINT IDENTITY(1,1),
@@ -291,3 +297,16 @@ select * from ClientesInfo.Tarjeta_Cliente
 
 --Apartado
 select * from Clientes
+
+
+SELECT 
+    pa.id_producto AS IdProducto, 
+    t.nombre AS NombreTemporada, 
+	cantidad AS Cantidad,
+    pa.subtotal_apartado AS Subtotal
+FROM VentasInfo.Producto_Apartado pa
+INNER JOIN ProductoInfo.Producto p ON pa.id_producto = p.id_producto
+INNER JOIN ProductoInfo.Producto_Temporada pt ON pa.id_producto = pt.id_producto  -- 🔥 Condición de JOIN corregida
+INNER JOIN ProductoInfo.Temporada t ON pt.id_temporada = t.id_temporada;
+
+
