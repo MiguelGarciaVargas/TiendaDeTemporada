@@ -1,14 +1,22 @@
-﻿-- Crear la base de datos
+﻿-- Usar master para poder eliminar la BD si existe
 USE master;
-DROP DATABASE TiendaDeTemporada;
-CREATE DATABASE TiendaDeTemporada;
-USE TiendaDeTemporada;
+GO
 
--- Esquemas de tablas
+-- Crear la base de datos
+CREATE DATABASE TiendaDeTemporada;
+GO
+
+-- Usar la nueva base de datos
+USE TiendaDeTemporada;
+GO
+
+-- Crear esquemas
 CREATE SCHEMA ClientesInfo AUTHORIZATION dbo;
 CREATE SCHEMA ComprasInfo AUTHORIZATION dbo;
 CREATE SCHEMA ProductoInfo AUTHORIZATION dbo;
 CREATE SCHEMA VentasInfo AUTHORIZATION dbo;
+GO
+
 
 -- Tablas ClienteInfo
 CREATE TABLE ClientesInfo.Cliente(
@@ -66,14 +74,9 @@ CREATE TABLE ProductoInfo.Producto_Temporada (
     id_temporada BIGINT NOT NULL,
 	CONSTRAINT PKProductoTemporada PRIMARY KEY (id_producto_temporada),
     CONSTRAINT FKProductoTemporada_Producto FOREIGN KEY (id_producto) REFERENCES ProductoInfo.Producto(id_producto),
-    CONSTRAINT FKProductoTemporada_Temporada FOREIGN KEY (id_temporada) REFERENCES ProductoInfo.Temporada(id_temporada)
+    CONSTRAINT FKProductoTemporada_Temporada FOREIGN KEY (id_temporada) REFERENCES ProductoInfo.Temporada(id_temporada),
+	CONSTRAINT UQ_Producto_Temporada UNIQUE (id_producto, id_temporada)
 );
-
-TRUNCATE TABLE ProductoInfo.Producto_Temporada;
-
-ALTER TABLE ProductoInfo.Producto_Temporada
-ADD CONSTRAINT UQ_ProductoTemporada UNIQUE (id_producto, id_temporada);
-
 
 
 CREATE TABLE ComprasInfo.Compra (
@@ -139,7 +142,17 @@ CREATE TABLE VentasInfo.Producto_Apartado (
     CONSTRAINT PKProductoApartado_Producto FOREIGN KEY (id_producto) REFERENCES ProductoInfo.Producto(id_producto),
     CONSTRAINT PKProductoApartado_Apartado FOREIGN KEY (id_apartado) REFERENCES VentasInfo.Apartado(id_apartado)
 );
-
+ALTER TABLE VentasInfo.Producto_Apartado
+ADD CONSTRAINT CHK_Cantidad_Positive CHECK (cantidad > 0);
+-- 1. Elimina solo la FK que apunta a Apartado
+ALTER TABLE VentasInfo.Producto_Apartado
+DROP CONSTRAINT PKProductoApartado_Apartado;
+-- 2. Vuelve a crearla con ON DELETE CASCADE
+ALTER TABLE VentasInfo.Producto_Apartado
+ADD CONSTRAINT FK_ProductoApartado_Apartado
+FOREIGN KEY (id_apartado)
+REFERENCES VentasInfo.Apartado(id_apartado)
+ON DELETE CASCADE;
 
 CREATE TABLE VentasInfo.Abono (
     id_abono BIGINT IDENTITY(1,1) ,
@@ -149,21 +162,138 @@ CREATE TABLE VentasInfo.Abono (
 	CONSTRAINT PKAbono PRIMARY KEY(id_abono),
     CONSTRAINT PKAbono_apartado FOREIGN KEY (id_apartado) REFERENCES VentasInfo.Apartado(id_apartado)
 );
+-- Elimina la FK actual
+ALTER TABLE VentasInfo.Abono
+DROP CONSTRAINT PKAbono_apartado;
+-- Agrega de nuevo con cascada
+ALTER TABLE VentasInfo.Abono
+ADD CONSTRAINT FK_Abono_Apartado
+FOREIGN KEY (id_apartado)
+REFERENCES VentasInfo.Apartado(id_apartado)
+ON DELETE CASCADE;
 
 
 -- Triggers corregidos
 -- 1. Actualizar existencias tras una venta
-CREATE TRIGGER trg_AfterInsertVenta
+
+
+
+
+
+--1.2 Actualizar despues de un abono
+GO
+CREATE TRIGGER VentasInfo.trg_AfterInsertVenta
 ON VentasInfo.Detalle_Venta
 AFTER INSERT
 AS
 BEGIN
+    -- Restar existencias SOLO si la venta NO proviene de un apartado
     UPDATE ProductoInfo.Producto
     SET existencias = existencias - i.cantidad
     FROM ProductoInfo.Producto p
-    INNER JOIN inserted i ON p.id_producto = i.id_producto;
+    INNER JOIN inserted i ON p.id_producto = i.id_producto
+    LEFT JOIN VentasInfo.Producto_Apartado pa ON i.id_producto = pa.id_producto AND pa.id_apartado = i.id_venta
+    WHERE pa.id_apartado IS NULL; -- 🔹 Solo afecta productos que NO provienen de un apartado
+	
 END;
+GO
 
+--DROP TRIGGER VentasInfo.trg_AfterInsertProductoApartado;
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
+CREATE TRIGGER trg_AfterInsertProductoApartado
+ON VentasInfo.Producto_Apartado
+AFTER INSERT
+AS
+BEGIN
+    -- 1️⃣ Restar la cantidad apartada de las existencias del producto
+    UPDATE p
+    SET p.existencias = p.existencias - i.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN inserted i ON p.id_producto = i.id_producto;
+
+    -- 2️⃣ Aumentar el total y el saldo pendiente del apartado
+   UPDATE a
+	SET 
+		a.total_apartado = a.total_apartado + (i.cantidad * p.precio_producto),
+		a.saldo_pendiente = a.saldo_pendiente + (i.cantidad * p.precio_producto)
+	FROM VentasInfo.Apartado a
+	INNER JOIN inserted i ON a.id_apartado = i.id_apartado
+	INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
+
+END;
+GO
+--DELETE
+CREATE TRIGGER trg_AfterDeleteProductoApartado
+ON VentasInfo.Producto_Apartado
+AFTER DELETE
+AS
+BEGIN
+    -- 1️⃣ Devolver existencias al producto
+    UPDATE p
+    SET p.existencias = p.existencias + d.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN deleted d ON p.id_producto = d.id_producto;
+
+    -- 2️⃣ Aumentar el total y el saldo pendiente del apartado
+    UPDATE a
+	SET 
+	a.total_apartado = a.total_apartado - d.subtotal_apartado,
+	a.saldo_pendiente = a.saldo_pendiente - d.subtotal_apartado
+	FROM VentasInfo.Apartado a
+	INNER JOIN deleted d ON a.id_apartado = d.id_apartado;
+
+END;
+GO
+--UPDATE
+CREATE TRIGGER trg_AfterUpdateProductoApartado
+ON VentasInfo.Producto_Apartado
+AFTER UPDATE
+AS
+BEGIN
+    -- 1️⃣ Si el producto cambió: devolver existencias al anterior y restar al nuevo
+    UPDATE p
+    SET p.existencias = p.existencias + d.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN deleted d ON p.id_producto = d.id_producto
+    INNER JOIN inserted i ON d.id_apartado = i.id_apartado
+    WHERE d.id_producto <> i.id_producto;
+
+    UPDATE p
+    SET p.existencias = p.existencias - i.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN inserted i ON p.id_producto = i.id_producto
+    INNER JOIN deleted d ON i.id_apartado = d.id_apartado
+    WHERE d.id_producto <> i.id_producto;
+
+    -- 2️⃣ Si solo cambió la cantidad (mismo producto), ajustar la diferencia
+    UPDATE p
+    SET p.existencias = p.existencias + d.cantidad - i.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN inserted i ON p.id_producto = i.id_producto
+    INNER JOIN deleted d ON i.id_apartado = d.id_apartado
+    WHERE d.id_producto = i.id_producto AND d.cantidad <> i.cantidad;
+
+    -- 3️⃣ Ajustar total_apartado y saldo_pendiente
+    -- Restamos el subtotal anterior y sumamos el nuevo
+    UPDATE a
+    SET 
+        a.total_apartado = a.total_apartado - d.subtotal_apartado + (i.cantidad * p.precio_producto),
+        a.saldo_pendiente = a.saldo_pendiente - d.subtotal_apartado + (i.cantidad * p.precio_producto)
+    FROM VentasInfo.Apartado a
+    INNER JOIN inserted i ON a.id_apartado = i.id_apartado
+    INNER JOIN deleted d ON i.id_apartado = d.id_apartado
+    INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
+END;
+GO
+
+
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
+--Triggers de Apartado y Producto_Apartado
 -- 2. Actualizar saldo pendiente tras un abono
 CREATE TRIGGER trg_AfterInsertAbono
 ON VentasInfo.Abono
@@ -180,6 +310,7 @@ BEGIN
     SET estado = 'Liquidado'
     WHERE saldo_pendiente = 0;
 END;
+GO
 
 -- 3. Actualizar total_venta tras una venta
 CREATE TRIGGER trg_AfterInsertDetalleVenta
@@ -193,7 +324,7 @@ BEGIN
     INNER JOIN inserted i ON v.id_venta = i.id_venta
     INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
 END;
-
+GO
 -- 4. Actualizar total_compra tras una compra
 CREATE TRIGGER trg_AfterInsertDetalleCompra
 ON ComprasInfo.Detalle_Compra
@@ -206,6 +337,7 @@ BEGIN
     INNER JOIN inserted i ON c.id_compra = i.id_compra
     INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
 END;
+GO
 
 -- 5. Convertir Apartado en Venta cuando sea liquidado
 CREATE TRIGGER trg_UpdateApartadoToLiquidado
@@ -244,7 +376,7 @@ BEGIN
         JOIN @ventas v ON pa.id_apartado = v.id_apartado;
     END;
 END;
-
+GO
 
 
 
@@ -265,17 +397,48 @@ END;
 
 
 --Regla tipos de estados
+GO
 CREATE RULE Rule_EstadoApartado
 	AS @valor IN ('En proceso', 'Liquidado');
+GO
 
 sp_bindrule 'Rule_EstadoApartado', 'VentasInfo.Apartado.estado';
+GO
 
 -- RULE PARA CANTIDADES MAYOR A 0
 CREATE RULE Rule_CantidadPositiva
 	as @valor > 0;
+GO
 
 sp_bindrule 'Rule_CantidadPositiva', 'VentasInfo.Producto_Apartado.cantidad';
+GO
+
 sp_bindrule 'Rule_CantidadPositiva', 'VentasInfo.Detalle_Venta.cantidad';
+GO
+
+--Productos
+INSERT INTO ProductoInfo.Producto (nombre_producto, precio_producto, existencias) VALUES
+('Camiseta Dry-Fit', 299.99, 50),
+('Pantalones Deportivos', 499.00, 30),
+('Sudadera Oversize', 699.50, 20),
+('Shorts Tie-Dye', 259.90, 40),
+('Tank Top Metálico', 349.75, 25);
+
+--Temporadas
+INSERT INTO ProductoInfo.Temporada (nombre, fecha_inicio, fecha_fin) VALUES
+('Primavera 2024', '2024-03-01', '2024-05-31'),
+('Verano 2024', '2024-06-01', '2024-08-31'),
+('Otoño 2024', '2024-09-01', '2024-11-30'),
+('Invierno 2024', '2024-12-01', '2025-02-28'),
+('Edición Limitada', '2024-07-01', '2024-07-31');
+
+--Producto Temporada
+INSERT INTO ProductoInfo.Producto_Temporada (id_producto, id_temporada) VALUES
+(1, 1), -- Camiseta Dry-Fit en Primavera
+(2, 2), -- Pantalones Deportivos en Verano
+(3, 3), -- Sudadera Oversize en Otoño
+(4, 2), -- Shorts Tie-Dye en Verano
+(5, 5); -- Tank Top Metálico en Edición Limitada
 
 
 --Clientes
@@ -296,17 +459,17 @@ select * from ClientesInfo.Tarjeta_Cliente
 
 
 --Apartado
-select * from Clientes
+select * from VentasInfo.Apartado
+
+select * from ProductoInfo.Producto
+
+SELECT id_producto, id_apartado, cantidad, subtotal_apartado FROM VentasInfo.Producto_Apartado
+
+select * from ClientesInfo.Tarjeta_Cliente
 
 
-SELECT 
-    pa.id_producto AS IdProducto, 
-    t.nombre AS NombreTemporada, 
-	cantidad AS Cantidad,
-    pa.subtotal_apartado AS Subtotal
-FROM VentasInfo.Producto_Apartado pa
-INNER JOIN ProductoInfo.Producto p ON pa.id_producto = p.id_producto
-INNER JOIN ProductoInfo.Producto_Temporada pt ON pa.id_producto = pt.id_producto  -- 🔥 Condición de JOIN corregida
-INNER JOIN ProductoInfo.Temporada t ON pt.id_temporada = t.id_temporada;
+select * from VentasInfo.Producto_Apartado
 
 
+INSERT INTO VentasInfo.Abono (id_apartado, cantidad, fecha_abono)
+VALUES (3, 100, GETDATE());

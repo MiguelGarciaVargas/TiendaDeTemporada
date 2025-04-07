@@ -17,17 +17,61 @@ namespace Tienda_de_Temporada
         private int selectedID;
         private int idApartado;
         private int selectedProductId;
+        private int cantidadSelected;
 
         public Producto_Apartado(int id)
         {
-            InitializeComponent();
-            id++;
-            lblIdApartado.Text = id.ToString();
             idApartado = id;
+            InitializeComponent();
             variable_Conexion = new ConexionClass();
+            loadStart();
             Load_ComboBox_Productos();
             ConsultarDatos();
         }
+
+        private void loadStart()
+        {
+            using (SqlConnection conexion = variable_Conexion.Conectar())
+            {
+                try
+                {
+                    string sentencia = @"
+                                SELECT 
+                        CAST(id_apartado AS varchar) + 
+                        ' - ' + 
+                        c.nombre_cliente + 
+                        ' (' + 
+                        CONVERT(varchar, a.fecha_vencimiento, 3) + 
+                        ')' AS Resultado
+                        FROM VentasInfo.Apartado a
+                        INNER JOIN ClientesInfo.Tarjeta_Cliente tc ON a.id_tarjeta_cliente = tc.id_tarjeta_cliente
+                        INNER JOIN ClientesInfo.Cliente c ON tc.id_cliente = c.id_cliente
+                        WHERE id_apartado = @id;";
+
+                    conexion.Open();
+
+                    SqlCommand comando = new SqlCommand(sentencia, conexion);
+
+                    comando.Parameters.AddWithValue("@id", idApartado);
+                    SqlDataReader reader = comando.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        string resultado = reader["Resultado"].ToString();
+                        lblIdApartado.Text = resultado;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al consultar Apartado: " + ex.Message);
+                }
+                finally
+                {
+                    conexion.Close();
+                }
+            }
+        }
+
 
 
         public void ConsultarDatos()
@@ -64,6 +108,20 @@ namespace Tienda_de_Temporada
                     tabla_prodApart.Columns[0].HeaderText = "Producto";
                     tabla_prodApart.Columns[1].HeaderText = "Cantidad";
                     tabla_prodApart.Columns[2].HeaderText = "Subtotal";
+
+                    // Ajustar anchos de columna
+                    tabla_prodApart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                    tabla_prodApart.Columns[0].Width = 100; 
+                    tabla_prodApart.Columns[1].Width = 400;  
+                    tabla_prodApart.Columns[2].Width = 100; 
+                    tabla_prodApart.Columns[3].Width = 200; 
+
+
+                    combo_producto.SelectedValue = -1;
+                    textBox_cantidad.Text = "";
+                    cantidadSelected = -1;
+                    selectedProductId = -1;
+                    selectedID = -1;
 
                 }
                 catch (Exception ex)
@@ -134,20 +192,24 @@ namespace Tienda_de_Temporada
                     SqlCommand comando = new SqlCommand(sentencia, conexion);
                     comando.Parameters.AddWithValue("@idProducto", id);
 
-                    SqlDataReader lector = comando.ExecuteReader();
-
-                    if (lector.Read()) {
-                        int existencias = lector.GetInt32(0);
-                        decimal precio = lector.GetDecimal(1);
-
-                        if (cantidad <= Convert.ToInt32(existencias))
+                    using (SqlDataReader lector = comando.ExecuteReader())
+                    {
+                        if (lector.Read())
                         {
-                            return precio;
-                        } else
-                        {
-                            MessageBox.Show("No hay suficientes existencias del producto seleccionado");
+                            int existencias = lector.GetInt32(0);
+                            decimal precio = lector.GetDecimal(1);
+
+                            if (cantidad <= existencias)
+                            {
+                                return precio;
+                            }
+                            else
+                            {
+                                MessageBox.Show("No hay suficientes existencias del producto seleccionado");
+                            }
                         }
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -161,6 +223,59 @@ namespace Tienda_de_Temporada
 
             return -1;
         }
+
+        public decimal hayExistenciasActualizar(long idProductoNuevo, int nuevaCantidad)
+        {
+            using (SqlConnection conexion = variable_Conexion.Conectar())
+            {
+                try
+                {
+                    string sentencia = "SELECT existencias, precio_producto FROM ProductoInfo.Producto WHERE id_producto = @id";
+
+                    conexion.Open();
+
+                    SqlCommand comando = new SqlCommand(sentencia, conexion);
+                    comando.Parameters.AddWithValue("@id", idProductoNuevo);
+
+                    using (SqlDataReader lector = comando.ExecuteReader())
+                    {
+                        if (lector.Read())
+                        {
+                            int existencias = lector.GetInt32(0);
+                            decimal precio = lector.GetDecimal(1);
+
+                            int disponibles = existencias;
+
+                            // Si no cambió de producto, se libera la cantidad anterior antes de volver a validar
+                            if (idProductoNuevo == selectedProductId)
+                            {
+                                disponibles += cantidadSelected;
+                            }
+
+                            if (nuevaCantidad <= disponibles)
+                            {
+                                return precio;
+                            }
+                            else
+                            {
+                                MessageBox.Show("No hay suficientes existencias del producto seleccionado");
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Error al consultar existencias del producto");
+                }
+                finally
+                {
+                    conexion.Close();
+                }
+
+                return -1;
+            }
+        }
+
 
         public void EliminarDato()
         {
@@ -224,7 +339,7 @@ namespace Tienda_de_Temporada
                     long idProducto = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
                     long cantidad = Convert.ToInt64(filaSeleccionada.Cells[2].Value);
                     selectedProductId = (int)idProducto;
-
+                    cantidadSelected = (int)cantidad;
                     combo_producto.SelectedValue = idProducto;
                     textBox_cantidad.Text = cantidad.ToString();
 
@@ -250,12 +365,11 @@ namespace Tienda_de_Temporada
                     string sentencia = @"
                         SELECT 
                             p.id_producto, 
-                            p.nombre_producto, 
-                            t.id_temporada, 
-                            t.nombre 
+                            CONCAT(p.id_producto, ' - ', p.nombre_producto, ' (', t.nombre, ')') AS Producto
                         FROM ProductoInfo.Producto_Temporada pt
                         INNER JOIN ProductoInfo.Producto p ON pt.id_producto = p.id_producto
                         INNER JOIN ProductoInfo.Temporada t ON pt.id_temporada = t.id_temporada";
+
 
                     conexion.Open();
 
@@ -292,12 +406,68 @@ namespace Tienda_de_Temporada
 
         }
 
+        public void UpdateDato()
+        {
+            using (SqlConnection conexion = variable_Conexion.Conectar())
+            {
+                try
+                {
+                    int cantidad = Convert.ToInt32(textBox_cantidad.Text);
+                    long nuevoProductoId = (long)combo_producto.SelectedValue;
+
+                    // Este método usa selectedProductId y cantidadSelected internamente
+                    decimal precio = hayExistenciasActualizar(nuevoProductoId, cantidad);
+
+                    if (precio == -1)
+                        return;
+
+                    decimal subtotal = precio * cantidad;
+                    // Luego haces el UPDATE como ya lo tienes
+
+
+                    string sentencia = "UPDATE VentasInfo.Producto_Apartado " +
+                                       "SET id_producto = @nuevoProducto, " +
+                                       "    cantidad = @nuevaCantidad, " +
+                                       "    subtotal_apartado = @nuevoSubtotal " +
+                                       "WHERE id_apartado = @apartado AND id_producto = @productoAnterior;";
+
+                    conexion.Open();
+
+                    SqlCommand comando = new SqlCommand(sentencia, conexion);
+                    comando.Parameters.AddWithValue("@nuevoProducto", nuevoProductoId);
+                    comando.Parameters.AddWithValue("@nuevaCantidad", cantidad);
+                    comando.Parameters.AddWithValue("@nuevoSubtotal", subtotal);
+                    comando.Parameters.AddWithValue("@apartado", idApartado); // Este debe ser global como ya lo estás usando
+                    comando.Parameters.AddWithValue("@productoAnterior", selectedProductId); // El que se seleccionó antes
+
+                    comando.ExecuteNonQuery();
+
+                    MessageBox.Show("Producto actualizado correctamente");
+                    textBox_cantidad.Text = "";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al actualizar producto del apartado: " + ex.Message);
+                }
+                finally
+                {
+                    conexion.Close();
+                }
+            }
+        }
+
+
         private void textBox_cantidad_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Solo permite números y la tecla Backspace
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true; // Bloquea la tecla
+            }
+            // Evita que el primer dígito sea 0
+            if (textBox_cantidad.Text.Length == 0 && e.KeyChar == '0')
+            {
+                e.Handled = true;
             }
         }
 
@@ -310,6 +480,12 @@ namespace Tienda_de_Temporada
         private void button_eliminar_Click(object sender, EventArgs e)
         {
             EliminarDato();
+            ConsultarDatos();
+        }
+
+        private void button_actualizar_Click(object sender, EventArgs e)
+        {
+            UpdateDato();
             ConsultarDatos();
         }
     }

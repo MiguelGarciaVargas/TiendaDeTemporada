@@ -15,6 +15,7 @@ namespace Tienda_de_Temporada
     {
         public ConexionClass variable_Conexion;
         private int datoSeleccionado = -1;
+        private int idSeleccionado = -1;
 
         public Apartado()
         {
@@ -124,7 +125,7 @@ namespace Tienda_de_Temporada
                         tabla_apartado.Columns["Saldo Pendiente"].HeaderText = "Saldo Pendiente";
                         tabla_apartado.Columns["Estado"].HeaderText = "Estado";
                         tabla_apartado.Columns["IdTarjeta"].HeaderText = "IdTarjeta";
-                        tabla_apartado.Columns["Tarjeta"].HeaderText = "Tarjeta";
+                        tabla_apartado.Columns["Tarjeta"].HeaderText = "Cliente";
                         tabla_apartado.Columns["Fecha de Inicio"].HeaderText = "Fecha de inicio";
                         tabla_apartado.Columns["Fecha de Vencimiento"].HeaderText = "Fecha de Vencimiento";
 
@@ -141,6 +142,14 @@ namespace Tienda_de_Temporada
                         tabla_apartado.Columns["Tarjeta"].Width = 300;
                         tabla_apartado.Columns["Fecha de Inicio"].Width = 120;
                         tabla_apartado.Columns["Fecha de Vencimiento"].Width = 120;
+
+                        calendar_fecha_fin.MinDate = DateTime.Now;
+                        combo_tarjetas.SelectedValue = -1;
+                        datoSeleccionado = -1;
+                        idSeleccionado = -1;
+
+                        btnAbono.Enabled = false;
+                        btn_producto_apartado.Enabled = false;
 
                     }
                     else
@@ -163,7 +172,7 @@ namespace Tienda_de_Temporada
 
         public void InsertaDato()
         {
-            DateTime fecha_inicio = calendar_fecha_inicio.SelectionStart;
+            DateTime fecha_inicio = DateTime.Now;
             DateTime fecha_fin = calendar_fecha_fin.SelectionStart;
 
             using (SqlConnection conexion = variable_Conexion.Conectar())
@@ -350,14 +359,15 @@ namespace Tienda_de_Temporada
                     long idApartado = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
                     long idTarjeta = Convert.ToInt64(filaSeleccionada.Cells[4].Value);
 
+                    idSeleccionado = (int)idApartado;
+
                     combo_tarjetas.SelectedValue = idTarjeta;
 
-                    DateTime fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado].Cells[6].Value.ToString());
-                    calendar_fecha_inicio.SetDate(fecha);
-                    fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado ].Cells[7].Value.ToString());
+                    DateTime fecha = DateTime.Parse(tabla_apartado.Rows[datoSeleccionado ].Cells[7].Value.ToString());
                     calendar_fecha_fin.SetDate(fecha);
 
                     btn_producto_apartado.Enabled = true;
+                    btnAbono.Enabled = true;
 
                 }
                 catch (Exception ex)
@@ -366,12 +376,6 @@ namespace Tienda_de_Temporada
                 }
 
             }
-        }
-
-
-        private void calendar_fecha_inicio_DateChanged(object sender, DateRangeEventArgs e)
-        {
-            calendar_fecha_fin.MinDate = calendar_fecha_inicio.SelectionStart;
         }
 
         private void combo_tarjetas_SelectedIndexChanged(object sender, EventArgs e)
@@ -396,7 +400,6 @@ namespace Tienda_de_Temporada
 
                         // 🔹 Limita la selección en `calendar_fecha_fin`
                         calendar_fecha_fin.MaxDate = fechaVencimientoTarjeta;
-                        calendar_fecha_inicio.MaxDate = fechaVencimientoTarjeta;
 
                         // 🔹 Si la fecha de vencimiento seleccionada es mayor, corregirla
                         if (calendar_fecha_fin.SelectionStart > fechaVencimientoTarjeta)
@@ -419,12 +422,19 @@ namespace Tienda_de_Temporada
         private void Apartado_Load(object sender, EventArgs e)
         {
             btn_producto_apartado.Enabled = false;
+            btnAbono.Enabled = false;
         }
 
         private void btn_producto_apartado_Click(object sender, EventArgs e)
         {
-            Producto_Apartado pantallaProductoApartado = new Producto_Apartado(datoSeleccionado);
+            Producto_Apartado pantallaProductoApartado = new Producto_Apartado(idSeleccionado);
             pantallaProductoApartado.Show();
+        }
+
+        private void btnAbono_Click(object sender, EventArgs e)
+        {
+            Abono pantallaAbono = new Abono(idSeleccionado);
+            pantallaAbono.Show();
         }
     }
 }

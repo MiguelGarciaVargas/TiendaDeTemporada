@@ -62,7 +62,7 @@
             this.comboBox_pantallas.Name = "comboBox_pantallas";
             this.comboBox_pantallas.Size = new System.Drawing.Size(246, 30);
             this.comboBox_pantallas.TabIndex = 47;
-            this.comboBox_pantallas.Text = "Apartado";
+            this.comboBox_pantallas.Text = "Producto - Apartado";
             // 
             // label_nombre
             // 
@@ -88,6 +88,7 @@
             this.button_actualizar.TabIndex = 57;
             this.button_actualizar.Text = "Actualizar";
             this.button_actualizar.UseVisualStyleBackColor = false;
+            this.button_actualizar.Click += new System.EventHandler(this.button_actualizar_Click);
             // 
             // label_producto
             // 
@@ -106,7 +107,7 @@
             this.combo_producto.FormattingEnabled = true;
             this.combo_producto.Location = new System.Drawing.Point(195, 172);
             this.combo_producto.Name = "combo_producto";
-            this.combo_producto.Size = new System.Drawing.Size(192, 21);
+            this.combo_producto.Size = new System.Drawing.Size(292, 21);
             this.combo_producto.TabIndex = 52;
             this.combo_producto.Text = "Selecciona un producto";
             // 

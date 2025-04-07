@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abono.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Abono.Designer.cs">
+      <DependentUpon>Abono.cs</DependentUpon>
+    </Compile>
     <Compile Include="Apartado.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
     <Compile Include="Temporada.Designer.cs">
       <DependentUpon>Temporada.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Abono.resx">
+      <DependentUpon>Abono.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Apartado.resx">
       <DependentUpon>Apartado.cs</DependentUpon>
     </EmbeddedResource>
