@@ -12,8 +12,11 @@ GO
 
 -- Crear esquemas
 CREATE SCHEMA ClientesInfo AUTHORIZATION dbo;
+go
 CREATE SCHEMA ComprasInfo AUTHORIZATION dbo;
+go
 CREATE SCHEMA ProductoInfo AUTHORIZATION dbo;
+go
 CREATE SCHEMA VentasInfo AUTHORIZATION dbo;
 GO
 
@@ -418,20 +421,15 @@ GO
 
 --Productos
 INSERT INTO ProductoInfo.Producto (nombre_producto, precio_producto, existencias) VALUES
-('Camiseta Dry-Fit', 299.99, 50),
-('Pantalones Deportivos', 499.00, 30),
-('Sudadera Oversize', 699.50, 20),
-('Shorts Tie-Dye', 259.90, 40),
-('Tank Top Metálico', 349.75, 25);
+('Calabaza', 100, 50),
+('Rosca', 500, 30),
+('Pie de Zanahora', 200, 20),
 
 --Temporadas
 INSERT INTO ProductoInfo.Temporada (nombre, fecha_inicio, fecha_fin) VALUES
-('Primavera 2024', '2024-03-01', '2024-05-31'),
-('Verano 2024', '2024-06-01', '2024-08-31'),
-('Otoño 2024', '2024-09-01', '2024-11-30'),
-('Invierno 2024', '2024-12-01', '2025-02-28'),
-('Edición Limitada', '2024-07-01', '2024-07-31');
-
+('Primavera 2025', '2025-03-01', '2025-05-31'),
+('Verano 2025', '2025-06-01', '2025-08-31'),
+('Otoño 2025', '2025-09-01', '2025-11-30')
 --Producto Temporada
 INSERT INTO ProductoInfo.Producto_Temporada (id_producto, id_temporada) VALUES
 (1, 1), -- Camiseta Dry-Fit en Primavera

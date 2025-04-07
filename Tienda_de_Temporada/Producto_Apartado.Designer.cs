@@ -186,7 +186,7 @@
             this.tabla_prodApart.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.tabla_prodApart.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.tabla_prodApart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.tabla_prodApart.Size = new System.Drawing.Size(836, 210);
+            this.tabla_prodApart.Size = new System.Drawing.Size(872, 210);
             this.tabla_prodApart.TabIndex = 55;
             this.tabla_prodApart.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tabla_apartado_CellClick);
             // 

@@ -18,6 +18,7 @@ namespace Tienda_de_Temporada
         private int idApartado;
         private int selectedProductId;
         private int cantidadSelected;
+        string nombreApartado;
 
         public Producto_Apartado(int id)
         {
@@ -57,8 +58,8 @@ namespace Tienda_de_Temporada
 
                     while (reader.Read())
                     {
-                        string resultado = reader["Resultado"].ToString();
-                        lblIdApartado.Text = resultado;
+                        nombreApartado = reader["Resultado"].ToString();
+                        lblIdApartado.Text = nombreApartado;
                     }
                 }
                 catch (Exception ex)
@@ -82,8 +83,9 @@ namespace Tienda_de_Temporada
                 {
                     string sentencia = @"
                         SELECT 
+                            @nombreApartado AS NombreApartado,
                             pa.id_producto AS IdProducto, 
-                            CONCAT(pa.id_producto, ' - ', p.nombre_producto, ' (', t.nombre, ')') AS Producto,
+                            CONCAT(pt.id_producto_temporada, ' - ', p.nombre_producto, ' (', t.nombre, ')') AS Producto,
                             pa.cantidad AS Cantidad,
                             pa.subtotal_apartado AS Subtotal
                         FROM VentasInfo.Producto_Apartado pa 
@@ -97,6 +99,7 @@ namespace Tienda_de_Temporada
 
                     SqlCommand comando = new SqlCommand(sentencia, conexion);
                     comando.Parameters.AddWithValue("@idApartado", idApartado);
+                    comando.Parameters.AddWithValue("@nombreApartado", nombreApartado);
                     SqlDataAdapter adapter = new SqlDataAdapter(comando);
                     DataTable tabla = new DataTable();
                     adapter.Fill(tabla);
@@ -105,16 +108,22 @@ namespace Tienda_de_Temporada
                     tabla_prodApart.Columns.Clear();
                     tabla_prodApart.DataSource = tabla;
 
-                    tabla_prodApart.Columns[0].HeaderText = "Producto";
-                    tabla_prodApart.Columns[1].HeaderText = "Cantidad";
-                    tabla_prodApart.Columns[2].HeaderText = "Subtotal";
+                    tabla_prodApart.Columns[0].HeaderText = "Id Producto-Apartado";
+                    tabla_prodApart.Columns[1].HeaderText = "Id Producto-Apartado";
+                    tabla_prodApart.Columns[2].HeaderText = "Producto";
+                    tabla_prodApart.Columns[3].HeaderText = "Cantidad";
+                    tabla_prodApart.Columns[4].HeaderText = "Subtotal";
 
-                    // Ajustar anchos de columna
+                    // Ajustar anchos
+
                     tabla_prodApart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                    tabla_prodApart.Columns[0].Width = 100; 
-                    tabla_prodApart.Columns[1].Width = 400;  
-                    tabla_prodApart.Columns[2].Width = 100; 
-                    tabla_prodApart.Columns[3].Width = 200; 
+                    tabla_prodApart.Columns[0].Width = 200;
+                    tabla_prodApart.Columns[1].Width = 0;
+                    tabla_prodApart.Columns[2].Width = 400;
+                    tabla_prodApart.Columns[3].Width = 100;
+                    tabla_prodApart.Columns[4].Width = 150;
+
+                    tabla_prodApart.Columns[1].Visible = false;
 
 
                     combo_producto.SelectedValue = -1;
@@ -169,7 +178,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al insertar datos del cliente" + ex);
+                    MessageBox.Show("Error al insertar producto al apartado");
                 }
                 finally
                 {
@@ -336,8 +345,8 @@ namespace Tienda_de_Temporada
 
                     //MessageBox.Show($"Fecha Inicio: {rawFechaInicio} ({rawFechaInicio.GetType()}) \nFecha Fin: {rawFechaFin} ({rawFechaFin.GetType()})");
 
-                    long idProducto = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
-                    long cantidad = Convert.ToInt64(filaSeleccionada.Cells[2].Value);
+                    long idProducto = Convert.ToInt64(filaSeleccionada.Cells[1].Value); // ya no [0]
+                    long cantidad = Convert.ToInt64(filaSeleccionada.Cells[3].Value);   // ya no [2]
                     selectedProductId = (int)idProducto;
                     cantidadSelected = (int)cantidad;
                     combo_producto.SelectedValue = idProducto;
@@ -383,7 +392,7 @@ namespace Tienda_de_Temporada
                         {
                             long idProd = lector.GetInt64(0);
                             string nameProd = lector.GetString(1);
-                            string comboText = $"{idProd} - {nameProd}";
+                            string comboText = $"{nameProd}";
                             productos.Add(new KeyValuePair<long, string>(idProd, comboText));
 
                         }
@@ -447,7 +456,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al actualizar producto del apartado: " + ex.Message);
+                    MessageBox.Show("Error al actualizar producto del apartado");
                 }
                 finally
                 {
