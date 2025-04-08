@@ -177,9 +177,64 @@ ON DELETE CASCADE;
 
 
 -- Triggers corregidos
--- 1. Actualizar existencias tras una venta
+-- 1. Comprobar que la cantidad del abono no sea mayor al saldo pendiente
+CREATE TRIGGER trg_validar_abono
+ON VentasInfo.Abono
+INSTEAD OF INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    -- Validar cada fila que se intenta insertar
+    IF EXISTS (
+        SELECT 1
+        FROM INSERTED i
+        JOIN VentasInfo.Apartado a ON i.id_apartado = a.id_apartado
+        WHERE i.cantidad > a.saldo_pendiente
+    )
+    BEGIN
+        RAISERROR('No se puede abonar más de lo que se debe.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
 
+    -- Si todo está bien, hacer el insert manual
+    INSERT INTO VentasInfo.Abono (id_apartado, cantidad, fecha_abono)
+    SELECT id_apartado, cantidad, fecha_abono
+    FROM INSERTED;
+END;
+Go
+--Para UPDATE
+CREATE TRIGGER trg_validar_abono_update
+ON VentasInfo.Abono
+INSTEAD OF UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validar que la nueva cantidad (después del update) no sea mayor al saldo
+    IF EXISTS (
+        SELECT 1
+        FROM INSERTED i
+        JOIN VentasInfo.Apartado a ON i.id_apartado = a.id_apartado
+        WHERE i.cantidad > a.saldo_pendiente
+    )
+    BEGIN
+        RAISERROR('No puedes actualizar el abono a una cantidad mayor al saldo pendiente.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+
+    -- Si pasa la validación, aplicar el UPDATE manualmente
+    UPDATE a
+    SET 
+        id_apartado = i.id_apartado,
+        cantidad = i.cantidad,
+        fecha_abono = i.fecha_abono
+    FROM VentasInfo.Abono a
+    JOIN INSERTED i ON a.id_abono = i.id_abono;
+END;
+Go
 
 
 

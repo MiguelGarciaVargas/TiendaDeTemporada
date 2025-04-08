@@ -102,7 +102,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al insertar datos del Abono" + ex);
+                    MessageBox.Show("Error al insertar datos del Abono");
                 }
                 finally
                 {
@@ -126,9 +126,9 @@ namespace Tienda_de_Temporada
                     }
 
                     string sentencia = @"
-                UPDATE VentasInfo.Abono
-                SET cantidad = @cantidad
-                WHERE id_abono = @idAbono;";
+                        UPDATE VentasInfo.Abono
+                        SET cantidad = @cantidad, fecha_abono = GETDATE()
+                        WHERE id_abono = @idAbono;";
 
                     conexion.Open();
 

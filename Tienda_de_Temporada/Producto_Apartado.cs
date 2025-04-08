@@ -313,12 +313,6 @@ namespace Tienda_de_Temporada
                     else
                         MessageBox.Show("No se encontró el registro a eliminar.");
 
-                    sentencia = "DELETE FROM VentasInfo.Producto_Apartado WHERE id_apartado = @id_apartado";
-                    comando = new SqlCommand(sentencia, conexion);
-                    comando.Parameters.AddWithValue("@id_apartado", idApartado);
-
-                    filasEliminadas = comando.ExecuteNonQuery();
-
                 }
                 catch (Exception ex)
                 {
