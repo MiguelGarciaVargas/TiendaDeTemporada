@@ -209,7 +209,7 @@
             this.comboBox_pantallas.Name = "comboBox_pantallas";
             this.comboBox_pantallas.Size = new System.Drawing.Size(246, 30);
             this.comboBox_pantallas.TabIndex = 62;
-            this.comboBox_pantallas.Text = "Producto - Apartado";
+            this.comboBox_pantallas.Text = "Abono";
             // 
             // Abono
             // 

@@ -369,6 +369,48 @@ BEGIN
     WHERE saldo_pendiente = 0;
 END;
 GO
+--En UPDAtE
+CREATE TRIGGER trg_ValidarUpdateAbono
+ON VentasInfo.Abono
+INSTEAD OF UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validar que la nueva cantidad no exceda el saldo real
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN deleted d ON i.id_abono = d.id_abono
+        JOIN VentasInfo.Apartado a ON i.id_apartado = a.id_apartado
+        WHERE i.cantidad > (a.saldo_pendiente + d.cantidad)
+    )
+    BEGIN
+        RAISERROR('No puedes actualizar el abono a una cantidad mayor al saldo pendiente.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+
+    -- Hacer el update del abono
+    UPDATE ab
+    SET ab.cantidad = i.cantidad,
+        ab.fecha_abono = i.fecha_abono
+    FROM VentasInfo.Abono ab
+    JOIN inserted i ON ab.id_abono = i.id_abono;
+
+    -- Recalcular el saldo pendiente con la diferencia
+    UPDATE a
+    SET saldo_pendiente = saldo_pendiente - (i.cantidad - d.cantidad),
+        estado = CASE WHEN saldo_pendiente - (i.cantidad - d.cantidad) = 0 THEN 'Liquidado' ELSE estado END
+    FROM VentasInfo.Apartado a
+    JOIN inserted i ON a.id_apartado = i.id_apartado
+    JOIN deleted d ON d.id_abono = i.id_abono;
+END;
+GO
+
+
+GO
+
 
 -- 3. Actualizar total_venta tras una venta
 CREATE TRIGGER trg_AfterInsertDetalleVenta
@@ -478,20 +520,24 @@ GO
 INSERT INTO ProductoInfo.Producto (nombre_producto, precio_producto, existencias) VALUES
 ('Calabaza', 100, 50),
 ('Rosca', 500, 30),
-('Pie de Zanahora', 200, 20),
+('Pie de Zanahora', 200, 20)
+
+INSERT INTO ProductoInfo.Producto (nombre_producto, precio_producto, existencias) VALUES
+('Conejo Pascua Grande', 500, 10)
 
 --Temporadas
 INSERT INTO ProductoInfo.Temporada (nombre, fecha_inicio, fecha_fin) VALUES
 ('Primavera 2025', '2025-03-01', '2025-05-31'),
 ('Verano 2025', '2025-06-01', '2025-08-31'),
 ('Otoño 2025', '2025-09-01', '2025-11-30')
+
+INSERT INTO ProductoInfo.Temporada (nombre, fecha_inicio, fecha_fin) VALUES
+('Pascua', '2025-02-17', '2025-05-31')
 --Producto Temporada
 INSERT INTO ProductoInfo.Producto_Temporada (id_producto, id_temporada) VALUES
 (1, 1), -- Camiseta Dry-Fit en Primavera
 (2, 2), -- Pantalones Deportivos en Verano
-(3, 3), -- Sudadera Oversize en Otoño
-(4, 2), -- Shorts Tie-Dye en Verano
-(5, 5); -- Tank Top Metálico en Edición Limitada
+(3, 3) -- Sudadera Oversize en Otoño
 
 
 --Clientes
@@ -523,6 +569,8 @@ select * from ClientesInfo.Tarjeta_Cliente
 
 select * from VentasInfo.Producto_Apartado
 
+update VentasInfo.Apartado set saldo_pendiente = 5500 where id_apartado = 2
+delete from VentasInfo.Abono where id_apartado = 2
 
 INSERT INTO VentasInfo.Abono (id_apartado, cantidad, fecha_abono)
 VALUES (3, 100, GETDATE());
