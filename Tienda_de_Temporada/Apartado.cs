@@ -16,6 +16,7 @@ namespace Tienda_de_Temporada
         public ConexionClass variable_Conexion;
         private int datoSeleccionado = -1;
         private int idSeleccionado = -1;
+        private bool selectedModificable = false;
 
         public Apartado()
         {
@@ -147,6 +148,7 @@ namespace Tienda_de_Temporada
                         combo_tarjetas.SelectedValue = -1;
                         datoSeleccionado = -1;
                         idSeleccionado = -1;
+                        selectedModificable = false;
 
                         btnAbono.Enabled = false;
                         btn_producto_apartado.Enabled = false;
@@ -358,8 +360,11 @@ namespace Tienda_de_Temporada
 
                     long idApartado = Convert.ToInt64(filaSeleccionada.Cells[0].Value);
                     long idTarjeta = Convert.ToInt64(filaSeleccionada.Cells[4].Value);
-
+                    string estado = Convert.ToString( filaSeleccionada.Cells[3].Value);
                     idSeleccionado = (int)idApartado;
+
+                    selectedModificable = estado != "Liquidado";
+
 
                     combo_tarjetas.SelectedValue = idTarjeta;
 
@@ -427,13 +432,13 @@ namespace Tienda_de_Temporada
 
         private void btn_producto_apartado_Click(object sender, EventArgs e)
         {
-            Producto_Apartado pantallaProductoApartado = new Producto_Apartado(idSeleccionado);
+            Producto_Apartado pantallaProductoApartado = new Producto_Apartado(idSeleccionado, selectedModificable);
             pantallaProductoApartado.Show();
         }
 
         private void btnAbono_Click(object sender, EventArgs e)
         {
-            Abono pantallaAbono = new Abono(idSeleccionado);
+            Abono pantallaAbono = new Abono(idSeleccionado, selectedModificable);
             pantallaAbono.Show();
         }
     }

@@ -19,10 +19,12 @@ namespace Tienda_de_Temporada
         private int selectedProductId;
         private int cantidadSelected;
         string nombreApartado;
+        bool sePuedeModificar;
 
-        public Producto_Apartado(int id)
+        public Producto_Apartado(int id, bool sePuedeModificar)
         {
             idApartado = id;
+            this.sePuedeModificar = sePuedeModificar;
             InitializeComponent();
             variable_Conexion = new ConexionClass();
             loadStart();
@@ -61,6 +63,14 @@ namespace Tienda_de_Temporada
                         nombreApartado = reader["Resultado"].ToString();
                         lblIdApartado.Text = nombreApartado;
                     }
+
+                    button_agregar.Visible = sePuedeModificar;
+                    button_actualizar.Visible = sePuedeModificar;
+                    button_eliminar.Visible = sePuedeModificar;
+                    label_existencias.Visible = sePuedeModificar;
+                    label_nombre.Visible = sePuedeModificar;
+                    combo_producto.Visible = sePuedeModificar;
+                    textBox_cantidad.Visible = sePuedeModificar;
                 }
                 catch (Exception ex)
                 {

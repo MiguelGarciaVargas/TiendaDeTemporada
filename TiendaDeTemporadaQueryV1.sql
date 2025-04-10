@@ -205,6 +205,7 @@ BEGIN
 END;
 Go
 --Para UPDATE
+
 CREATE TRIGGER trg_validar_abono_update
 ON VentasInfo.Abono
 INSTEAD OF UPDATE
@@ -212,12 +213,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Validar que la nueva cantidad (después del update) no sea mayor al saldo
+    -- Validar que la nueva cantidad no exceda el saldo real (sumando la anterior)
     IF EXISTS (
         SELECT 1
-        FROM INSERTED i
+        FROM inserted i
+        JOIN deleted d ON i.id_abono = d.id_abono
         JOIN VentasInfo.Apartado a ON i.id_apartado = a.id_apartado
-        WHERE i.cantidad > a.saldo_pendiente
+        WHERE i.cantidad > (a.saldo_pendiente + d.cantidad)
     )
     BEGIN
         RAISERROR('No puedes actualizar el abono a una cantidad mayor al saldo pendiente.', 16, 1);
@@ -225,36 +227,29 @@ BEGIN
         RETURN;
     END
 
-    -- Si pasa la validación, aplicar el UPDATE manualmente
+    -- Hacer el update del abono
+    UPDATE ab
+    SET ab.cantidad = i.cantidad,
+        ab.fecha_abono = i.fecha_abono
+    FROM VentasInfo.Abono ab
+    JOIN inserted i ON ab.id_abono = i.id_abono;
+
+    -- Recalcular el saldo pendiente con la diferencia
     UPDATE a
-    SET 
-        id_apartado = i.id_apartado,
-        cantidad = i.cantidad,
-        fecha_abono = i.fecha_abono
-    FROM VentasInfo.Abono a
-    JOIN INSERTED i ON a.id_abono = i.id_abono;
+    SET saldo_pendiente = saldo_pendiente - (i.cantidad - d.cantidad),
+        estado = CASE 
+                    WHEN saldo_pendiente - (i.cantidad - d.cantidad) = 0 THEN 'Liquidado'
+                    ELSE estado 
+                 END
+    FROM VentasInfo.Apartado a
+    JOIN inserted i ON a.id_apartado = i.id_apartado
+    JOIN deleted d ON d.id_abono = i.id_abono;
 END;
+GO
+
 Go
 
-
-
---1.2 Actualizar despues de un abono
-GO
-CREATE TRIGGER VentasInfo.trg_AfterInsertVenta
-ON VentasInfo.Detalle_Venta
-AFTER INSERT
-AS
-BEGIN
-    -- Restar existencias SOLO si la venta NO proviene de un apartado
-    UPDATE ProductoInfo.Producto
-    SET existencias = existencias - i.cantidad
-    FROM ProductoInfo.Producto p
-    INNER JOIN inserted i ON p.id_producto = i.id_producto
-    LEFT JOIN VentasInfo.Producto_Apartado pa ON i.id_producto = pa.id_producto AND pa.id_apartado = i.id_venta
-    WHERE pa.id_apartado IS NULL; -- 🔹 Solo afecta productos que NO provienen de un apartado
-	
-END;
-GO
+------
 
 --DROP TRIGGER VentasInfo.trg_AfterInsertProductoApartado;
 --Triggers de Apartado y Producto_Apartado
@@ -370,6 +365,10 @@ BEGIN
 END;
 GO
 --En UPDAtE
+SELECT name
+FROM sys.triggers
+WHERE parent_id = OBJECT_ID('VentasInfo.Abono');
+
 CREATE TRIGGER trg_ValidarUpdateAbono
 ON VentasInfo.Abono
 INSTEAD OF UPDATE
@@ -411,6 +410,28 @@ GO
 
 GO
 
+/*
+VENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTAS
+
+VENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTASVENTAS
+*/
+GO
+CREATE TRIGGER VentasInfo.trg_AfterInsertVenta
+ON VentasInfo.Detalle_Venta
+AFTER INSERT
+AS
+BEGIN
+    -- Restar existencias SOLO si la venta NO proviene de un apartado
+    UPDATE ProductoInfo.Producto
+    SET existencias = existencias - i.cantidad
+    FROM ProductoInfo.Producto p
+    INNER JOIN inserted i ON p.id_producto = i.id_producto
+    LEFT JOIN VentasInfo.Producto_Apartado pa ON i.id_producto = pa.id_producto AND pa.id_apartado = i.id_venta
+    WHERE pa.id_apartado IS NULL; -- 🔹 Solo afecta productos que NO provienen de un apartado
+	
+END;
+GO
+
 
 -- 3. Actualizar total_venta tras una venta
 CREATE TRIGGER trg_AfterInsertDetalleVenta
@@ -438,6 +459,10 @@ BEGIN
     INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
 END;
 GO
+
+
+select * from VentasInfo.Venta
+select * from VentasInfo.Detalle_Venta
 
 -- 5. Convertir Apartado en Venta cuando sea liquidado
 CREATE TRIGGER trg_UpdateApartadoToLiquidado
@@ -574,3 +599,7 @@ delete from VentasInfo.Abono where id_apartado = 2
 
 INSERT INTO VentasInfo.Abono (id_apartado, cantidad, fecha_abono)
 VALUES (3, 100, GETDATE());
+
+SELECT name
+FROM sys.triggers
+WHERE parent_id = OBJECT_ID('VentasInfo.Abono');
