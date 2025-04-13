@@ -488,6 +488,9 @@ select * from VentasInfo.Detalle_Venta
 --LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
 --LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
 --LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
+DROP TRIGGER VentasInfo.trg_UpdateApartadoToLiquidado;
+GO
+
 CREATE TRIGGER trg_UpdateApartadoToLiquidado
 ON VentasInfo.Apartado
 AFTER UPDATE
@@ -516,6 +519,13 @@ BEGIN
         FROM inserted i
         JOIN deleted d ON i.id_apartado = d.id_apartado
         WHERE i.estado = 'Liquidado' AND d.estado <> 'Liquidado';
+
+		-- Reponer existencias antes de convertir el producto apartado a venta
+		UPDATE p
+		SET p.existencias = p.existencias + pa.cantidad
+		FROM ProductoInfo.Producto p
+		INNER JOIN VentasInfo.Producto_Apartado pa ON p.id_producto = pa.id_producto
+		WHERE pa.id_apartado = @id_apartado;
 
         -- Insertamos en Venta
         INSERT INTO VentasInfo.Venta (id_tarjeta_cliente, fecha_venta, total_venta)
