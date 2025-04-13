@@ -407,7 +407,17 @@ BEGIN
 END;
 GO
 
-
+-- Trigger para inicializar saldo_pendiente con total_apartado
+CREATE TRIGGER trg_SetSaldoPendiente
+ON VentasInfo.Apartado
+AFTER INSERT
+AS
+BEGIN
+    UPDATE a
+    SET a.saldo_pendiente = a.total_apartado
+    FROM VentasInfo.Apartado a
+    INNER JOIN inserted i ON a.id_apartado = i.id_apartado;
+END;
 GO
 
 /*
@@ -447,30 +457,45 @@ BEGIN
 END;
 GO
 -- 4. Actualizar total_compra tras una compra
-CREATE TRIGGER trg_AfterInsertDetalleCompra
-ON ComprasInfo.Detalle_Compra
+DROP TRIGGER VentasInfo.trg_AfterInsertDetalleVenta;
+GO
+
+CREATE TRIGGER trg_AfterInsertDetalleVenta
+ON VentasInfo.Detalle_Venta
 AFTER INSERT
 AS
 BEGIN
-    UPDATE ComprasInfo.Compra
-    SET total_compra = total_compra + (i.cantidad * p.precio_producto)
-    FROM ComprasInfo.Compra c
-    INNER JOIN inserted i ON c.id_compra = i.id_compra
-    INNER JOIN ProductoInfo.Producto p ON i.id_producto = p.id_producto;
-END;
-GO
+    SET NOCOUNT ON;
 
+    UPDATE v
+    SET total_venta = (
+        SELECT SUM(dv.cantidad * p.precio_producto)
+        FROM VentasInfo.Detalle_Venta dv
+        INNER JOIN ProductoInfo.Producto p ON dv.id_producto = p.id_producto
+        WHERE dv.id_venta = v.id_venta
+    )
+    FROM VentasInfo.Venta v
+    INNER JOIN inserted i ON v.id_venta = i.id_venta;
+END;
+Go
 
 select * from VentasInfo.Venta
 select * from VentasInfo.Detalle_Venta
 
 -- 5. Convertir Apartado en Venta cuando sea liquidado
+--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
+--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
+--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
+--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
+--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO--LISTO
 CREATE TRIGGER trg_UpdateApartadoToLiquidado
 ON VentasInfo.Apartado
 AFTER UPDATE
 AS
 BEGIN
-    -- 1️⃣ Verificamos si algún apartado cambió su estado a 'Liquidado'
+    SET NOCOUNT ON;
+
+    -- Verificamos que SOLO se haya cambiado un apartado a 'Liquidado'
     IF EXISTS (
         SELECT 1 
         FROM inserted i
@@ -478,47 +503,35 @@ BEGIN
         WHERE i.estado = 'Liquidado' AND d.estado <> 'Liquidado'
     )
     BEGIN
-        -- 2️⃣ Declaramos una tabla temporal para almacenar los IDs de ventas generados
-        DECLARE @ventas TABLE (id_apartado BIGINT, id_venta BIGINT);
+        DECLARE @id_apartado BIGINT;
+        DECLARE @id_tarjeta_cliente BIGINT;
+        DECLARE @total_apartado DECIMAL(10, 2);
+        DECLARE @id_venta BIGINT;
 
-        -- 3️⃣ Insertamos en la tabla de ventas y capturamos los IDs generados
+        -- Obtenemos los datos del apartado que se acaba de liquidar
+        SELECT 
+            @id_apartado = i.id_apartado,
+            @id_tarjeta_cliente = i.id_tarjeta_cliente,
+            @total_apartado = i.total_apartado
+        FROM inserted i
+        JOIN deleted d ON i.id_apartado = d.id_apartado
+        WHERE i.estado = 'Liquidado' AND d.estado <> 'Liquidado';
+
+        -- Insertamos en Venta
         INSERT INTO VentasInfo.Venta (id_tarjeta_cliente, fecha_venta, total_venta)
-        SELECT i.id_tarjeta_cliente, GETDATE(), i.total_apartado
-        FROM inserted i
-        WHERE i.estado = 'Liquidado';
+        VALUES (@id_tarjeta_cliente, GETDATE(), 0);
 
-        -- 4️⃣ Guardamos la relación id_apartado ↔ id_venta en la tabla temporal
-        INSERT INTO @ventas (id_apartado, id_venta)
-        SELECT i.id_apartado, v.id_venta
-        FROM inserted i
-        JOIN VentasInfo.Venta v ON i.id_tarjeta_cliente = v.id_tarjeta_cliente
-        WHERE i.estado = 'Liquidado';
+        -- Capturamos el ID de venta recién generado
+        SET @id_venta = SCOPE_IDENTITY();
 
-        -- 5️⃣ Insertamos los detalles de la venta tomando los productos del apartado
+        -- Insertamos los productos del apartado en Detalle_Venta
         INSERT INTO VentasInfo.Detalle_Venta (id_venta, id_producto, cantidad, subtotal_venta)
-        SELECT v.id_venta, pa.id_producto, pa.cantidad, pa.subtotal_apartado
+        SELECT @id_venta, pa.id_producto, pa.cantidad, pa.subtotal_apartado
         FROM VentasInfo.Producto_Apartado pa
-        JOIN @ventas v ON pa.id_apartado = v.id_apartado;
+        WHERE pa.id_apartado = @id_apartado;
     END;
 END;
 GO
-
-
-
-
-
--- Trigger para inicializar saldo_pendiente con total_apartado
-CREATE TRIGGER trg_SetSaldoPendiente
-ON VentasInfo.Apartado
-AFTER INSERT
-AS
-BEGIN
-    UPDATE a
-    SET a.saldo_pendiente = a.total_apartado
-    FROM VentasInfo.Apartado a
-    INNER JOIN inserted i ON a.id_apartado = i.id_apartado;
-END;
-
 
 
 --Regla tipos de estados
@@ -540,6 +553,12 @@ GO
 
 sp_bindrule 'Rule_CantidadPositiva', 'VentasInfo.Detalle_Venta.cantidad';
 GO
+
+
+
+
+
+
 
 --Productos
 INSERT INTO ProductoInfo.Producto (nombre_producto, precio_producto, existencias) VALUES
@@ -600,6 +619,12 @@ delete from VentasInfo.Abono where id_apartado = 2
 INSERT INTO VentasInfo.Abono (id_apartado, cantidad, fecha_abono)
 VALUES (3, 100, GETDATE());
 
-SELECT name
-FROM sys.triggers
-WHERE parent_id = OBJECT_ID('VentasInfo.Abono');
+
+
+select * from VentasInfo.Apartado
+
+select * from VentasInfo.Producto_Apartado
+
+select * from VentasInfo.Venta
+
+select * from VentasInfo.Detalle_Venta

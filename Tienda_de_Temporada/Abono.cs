@@ -104,7 +104,7 @@ namespace Tienda_de_Temporada
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al insertar datos del Abono");
+                    MessageBox.Show("Error al insertar datos del Abono: " + ex);
                 }
                 finally
                 {
@@ -252,6 +252,13 @@ namespace Tienda_de_Temporada
         {
             UpdateAbono();
             ConsultarDatos();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Apartado pantallaApartado = new Apartado();
+            pantallaApartado.Show();
+            this.Close();
         }
     }
 }

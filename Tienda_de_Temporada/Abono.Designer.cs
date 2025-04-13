@@ -44,6 +44,7 @@
             this.button_agregar = new System.Windows.Forms.Button();
             this.label_producto = new System.Windows.Forms.Label();
             this.comboBox_pantallas = new System.Windows.Forms.ComboBox();
+            this.btn_regresar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_prodApart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -211,11 +212,26 @@
             this.comboBox_pantallas.TabIndex = 62;
             this.comboBox_pantallas.Text = "Abono";
             // 
+            // btn_regresar
+            // 
+            this.btn_regresar.BackColor = System.Drawing.Color.SteelBlue;
+            this.btn_regresar.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_regresar.ForeColor = System.Drawing.Color.White;
+            this.btn_regresar.Location = new System.Drawing.Point(719, 16);
+            this.btn_regresar.Margin = new System.Windows.Forms.Padding(2);
+            this.btn_regresar.Name = "btn_regresar";
+            this.btn_regresar.Size = new System.Drawing.Size(140, 65);
+            this.btn_regresar.TabIndex = 74;
+            this.btn_regresar.Text = "Regresar Apartado";
+            this.btn_regresar.UseVisualStyleBackColor = false;
+            this.btn_regresar.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Abono
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(879, 546);
+            this.Controls.Add(this.btn_regresar);
             this.Controls.Add(this.lblIdApartado);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_cantidad);
@@ -249,5 +265,6 @@
         private System.Windows.Forms.Button button_agregar;
         private System.Windows.Forms.Label label_producto;
         private System.Windows.Forms.ComboBox comboBox_pantallas;
+        private System.Windows.Forms.Button btn_regresar;
     }
 }

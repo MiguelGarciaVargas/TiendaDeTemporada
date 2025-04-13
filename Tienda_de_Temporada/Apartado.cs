@@ -434,12 +434,14 @@ namespace Tienda_de_Temporada
         {
             Producto_Apartado pantallaProductoApartado = new Producto_Apartado(idSeleccionado, selectedModificable);
             pantallaProductoApartado.Show();
+            this.Close();
         }
 
         private void btnAbono_Click(object sender, EventArgs e)
         {
             Abono pantallaAbono = new Abono(idSeleccionado, selectedModificable);
             pantallaAbono.Show();
+            this.Close();
         }
     }
 }

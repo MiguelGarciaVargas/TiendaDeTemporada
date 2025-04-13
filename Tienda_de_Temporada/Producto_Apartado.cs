@@ -501,5 +501,12 @@ namespace Tienda_de_Temporada
             UpdateDato();
             ConsultarDatos();
         }
+
+        private void btn_regresar_Click(object sender, EventArgs e)
+        {
+            Apartado pantallaApartado = new Apartado();
+            pantallaApartado.Show();
+            this.Close();
+        }
     }
 }
